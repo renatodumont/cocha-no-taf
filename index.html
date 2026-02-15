@@ -1,0 +1,362 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Trophy, 
+  Calendar, 
+  Clock, 
+  Activity, 
+  Printer, 
+  ChevronRight, 
+  Dumbbell,
+  User,
+  Target,
+  ChevronDown,
+  Info,
+  AlertTriangle,
+  RefreshCcw
+} from 'lucide-react';
+
+// --- Dados da Tabela TAF (Masculino 2400m - Fonte: Imagem Enviada) ---
+const TAF_DATA = [
+  { range: [18, 25], scores: { 50: "14:30", 60: "13:30", 70: "12:18", 80: "11:18", 90: "10:12", 100: "09:36" } },
+  { range: [26, 33], scores: { 50: "15:00", 60: "14:00", 70: "12:42", 80: "11:42", 90: "10:36", 100: "10:00" } },
+  { range: [34, 39], scores: { 50: "15:30", 60: "14:30", 70: "13:24", 80: "12:24", 90: "11:36", 100: "10:48" } },
+  { range: [40, 45], scores: { 50: "16:24", 60: "15:36", 70: "14:18", 80: "13:00", 90: "12:24", 100: "11:36" } },
+  { range: [46, 49], scores: { 50: "17:30", 60: "16:12", 70: "15:24", 80: "14:36", 90: "14:00", 100: "13:12" } },
+  { range: [50, 100], scores: { 50: "18:48", 60: "17:24", 70: "16:42", 80: "16:00", 90: "15:36", 100: "14:48" } }
+];
+
+const App = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    age: '',
+    time2400: '', // MM:SS
+    dist12min: '', // Para base de pace
+    targetScore: '70',
+    includeWalking: true,
+  });
+
+  const [plan, setPlan] = useState(null);
+  const [currentScore, setCurrentScore] = useState(null);
+
+  // Auxiliar: Converte MM:SS para Segundos
+  const timeToSeconds = (timeStr) => {
+    if (!timeStr || !timeStr.includes(':')) return 0;
+    const [m, s] = timeStr.split(':').map(Number);
+    return (m * 60) + s;
+  };
+
+  // Auxiliar: Converte Segundos para MM:SS
+  const secondsToTime = (totalSeconds) => {
+    const m = Math.floor(totalSeconds / 60);
+    const s = Math.round(totalSeconds % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
+  // Cálculo de Pontuação TAF Atual
+  useEffect(() => {
+    const age = parseInt(formData.age);
+    const timeSec = timeToSeconds(formData.time2400);
+    
+    if (age && timeSec > 0) {
+      const row = TAF_DATA.find(r => age >= r.range[0] && age <= r.range[1]);
+      if (row) {
+        let bestScore = 0;
+        Object.entries(row.scores).forEach(([score, timeLimit]) => {
+          if (timeSec <= timeToSeconds(timeLimit)) {
+            if (parseInt(score) > bestScore) bestScore = parseInt(score);
+          }
+        });
+        setCurrentScore(bestScore);
+      }
+    } else {
+      setCurrentScore(null);
+    }
+  }, [formData.age, formData.time2400]);
+
+  const generatePlan = (e) => {
+    e.preventDefault();
+    
+    // Cálculo de Intensidade
+    // Usamos a distância de 12min. Se não preenchida, estimamos a partir do tempo de 2400m
+    let d12 = parseFloat(formData.dist12min);
+    if (!d12 && formData.time2400) {
+        const time2400Min = timeToSeconds(formData.time2400) / 60;
+        d12 = 2400 * (12 / time2400Min);
+    }
+
+    if (!d12) return;
+
+    const basePace = 12 / (d12 / 1000); // min/km
+    const trainingPace = basePace * 1.25; // 25% mais lento (Corrida "Cocha")
+    
+    const row = TAF_DATA.find(r => parseInt(formData.age) >= r.range[0] && parseInt(formData.age) <= r.range[1]);
+    const targetTimeStr = row ? row.scores[formData.targetScore] : "00:00";
+
+    const weeks = [];
+    let currentVolume = 24; // min iniciais
+
+    for (let w = 1; w <= 4; w++) {
+      const weekData = {
+        week: w,
+        days: [
+          { day: 'Segunda-feira', type: 'Volume', focus: 'Construção de Base' },
+          { day: 'Quarta-feira', type: 'Recuperação', focus: 'Rodagem Leve' },
+          { day: 'Sexta-feira', type: 'Específico', focus: 'Adaptação' }
+        ]
+      };
+
+      weekData.days = weekData.days.map((d, index) => {
+        const dailyModifier = index === 1 ? 0.8 : (index === 2 ? 1.15 : 1.0);
+        const duration = Math.min(Math.round(currentVolume * dailyModifier), 60);
+
+        let desc = '';
+        if (formData.includeWalking) {
+          const runTime = w < 3 ? "2'" : "3'";
+          const walkTime = w < 3 ? "2'" : "1'";
+          desc = `Intervalado: ${runTime} Corrida / ${walkTime} Caminhada. Ritmo sugerido: ${secondsToTime(trainingPace * 60)}/km.`;
+        } else {
+          desc = `Corrida Contínua "Cocha" (Zona Aeróbica 1). Pace Alvo: ${secondsToTime(trainingPace * 60)} min/km.`;
+        }
+
+        return { ...d, duration, description: desc };
+      });
+
+      weeks.push(weekData);
+      currentVolume *= 1.10; // Evolução 10% semana
+    }
+
+    setPlan({ weeks, targetTimeStr, trainingPace: secondsToTime(trainingPace * 60) });
+  };
+
+  return (
+    <div className="min-h-screen bg-[#F8F9FA] font-['Montserrat'] text-slate-900 pb-12">
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Graduate&family=Montserrat:wght@300;400;600;700&family=Stardos+Stencil:wght@400;700&display=swap');
+          .font-military { font-family: 'Stardos Stencil', cursive; }
+          .font-stencil { font-family: 'Graduate', serif; }
+          @media print { .no-print { display: none !important; } .print-card { border: 1px solid #050F41 !important; box-shadow: none !important; } }
+        `}
+      </style>
+
+      {/* Header Institucional */}
+      <header className="bg-[#050F41] text-white py-6 px-4 shadow-2xl border-b-[6px] border-[#FAB932]">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="bg-[#FAB932] p-2 rounded-sm transform -rotate-1 shadow-lg">
+              <Trophy size={32} className="text-[#050F41]" />
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-5xl font-military tracking-tighter uppercase leading-none">Cocha no TAF</h1>
+              <p className="text-[10px] font-stencil tracking-[0.4em] text-[#079551] mt-1">SISTEMA DE PREPARAÇÃO FÍSICA</p>
+            </div>
+          </div>
+          <div className="hidden md:block text-right border-l-2 border-[#FAB932]/30 pl-4">
+            <span className="text-[10px] uppercase font-black text-[#FAB932]">Protocolo:</span>
+            <p className="text-sm font-bold uppercase">Base Aeróbica Estrita</p>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 mt-8">
+        {!plan ? (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Aviso de Re-teste (Crítico) */}
+            <div className="lg:col-span-1 space-y-6">
+              <div className="bg-[#050F41] text-white p-6 rounded-lg shadow-xl border-t-4 border-[#FAB932]">
+                <div className="flex items-start gap-3 mb-4">
+                  <RefreshCcw size={24} className="text-[#FAB932] shrink-0" />
+                  <h3 className="font-bold text-sm uppercase leading-tight">Atenção: Teste Necessário</h3>
+                </div>
+                <p className="text-xs leading-relaxed opacity-90 mb-4">
+                  Sua última corrida foi em **setembro do ano passado**. O condicionamento físico muda drasticamente em 5 meses.
+                </p>
+                <div className="bg-white/10 p-4 rounded text-xs">
+                  <p className="font-bold text-[#FAB932] mb-1 italic">Dica do EP:</p>
+                  "Antes de gerar seu plano, realize um novo **teste de 12 minutos**. Sem dados atuais, o treino pode ficar pesado demais ou leve demais para sua condição real de hoje."
+                </div>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="font-bold text-[#050F41] mb-3 flex items-center gap-2 uppercase text-xs">
+                  <Info size={16} className="text-[#079551]" /> A Tabela como Guia
+                </h3>
+                <p className="text-[11px] text-gray-500 leading-relaxed italic">
+                  A tabela TAF 2400m é nossa referência de pontuação. O algoritmo usará seu tempo alvo para calcular a progressão de 4 semanas.
+                </p>
+              </div>
+            </div>
+
+            {/* Formulário de Missão */}
+            <form onSubmit={generatePlan} className="lg:col-span-2 bg-white p-8 rounded-lg shadow-2xl space-y-8">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-5">
+                  <label className="block text-xs font-black text-[#050F41] uppercase tracking-widest">Informações Básicas</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3.5 text-gray-400" size={18} />
+                    <input 
+                      required type="text" placeholder="Nome"
+                      className="w-full pl-10 pr-4 py-3 border-2 border-gray-100 rounded focus:border-[#050F41] outline-none transition-all uppercase font-bold text-sm"
+                      value={formData.name}
+                      onChange={e => setFormData({...formData, name: e.target.value})}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <input 
+                      required type="number" placeholder="Idade"
+                      className="w-full px-4 py-3 border-2 border-gray-100 rounded focus:border-[#FAB932] outline-none font-bold"
+                      value={formData.age}
+                      onChange={e => setFormData({...formData, age: e.target.value})}
+                    />
+                    <div className="relative">
+                      <select 
+                        className="w-full px-4 py-3 border-2 border-gray-100 rounded bg-white appearance-none focus:border-[#079551] outline-none font-bold text-xs"
+                        value={formData.targetScore}
+                        onChange={e => setFormData({...formData, targetScore: e.target.value})}
+                      >
+                        <option value="50">Meta: 50 pts</option>
+                        <option value="70">Meta: 70 pts</option>
+                        <option value="80">Meta: 80 pts</option>
+                        <option value="100">Meta: 100 pts</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-4 text-gray-400" size={14} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-5">
+                  <label className="block text-xs font-black text-[#050F41] uppercase tracking-widest">Performance (Atualize Hoje!)</label>
+                  <div className="space-y-4">
+                    <div>
+                      <input 
+                        required type="number" placeholder="Teste de 12 min (Metros)"
+                        className="w-full px-4 py-3 border-2 border-[#FAB932] rounded focus:ring-4 ring-[#FAB932]/20 outline-none font-bold text-sm"
+                        value={formData.dist12min}
+                        onChange={e => setFormData({...formData, dist12min: e.target.value})}
+                      />
+                      <p className="text-[10px] text-gray-400 mt-1 italic">Fundamental para o cálculo do Pace "Cocha".</p>
+                    </div>
+                    <input 
+                      type="text" placeholder="Tempo nos 2400m (Ex: 13:30)"
+                      className="w-full px-4 py-3 border-2 border-gray-100 rounded focus:border-[#050F41] outline-none font-mono font-bold"
+                      value={formData.time2400}
+                      onChange={e => setFormData({...formData, time2400: e.target.value})}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-5 bg-[#07955110] rounded-lg border-2 border-[#07955120]">
+                <div>
+                  <h5 className="text-xs font-black text-[#050F41] uppercase">Incluir caminhada estratégica?</h5>
+                  <p className="text-[10px] text-gray-500 uppercase font-bold mt-1">Reduz fadiga e risco de lesão em 40%.</p>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => setFormData({...formData, includeWalking: !formData.includeWalking})}
+                  className={`w-14 h-7 rounded-full relative transition-all duration-300 ${formData.includeWalking ? 'bg-[#079551]' : 'bg-gray-400'}`}
+                >
+                  <div className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all shadow-md ${formData.includeWalking ? 'left-8' : 'left-1'}`} />
+                </button>
+              </div>
+
+              <button 
+                type="submit"
+                className="w-full bg-[#050F41] hover:bg-[#07165c] text-white py-5 rounded-sm font-military text-2xl tracking-[0.3em] transition-all shadow-xl flex items-center justify-center gap-4 hover:gap-6"
+              >
+                CRIAR PLANILHA <ChevronRight size={28} />
+              </button>
+            </form>
+          </div>
+        ) : (
+          <div className="space-y-6 pb-20 animate-in fade-in duration-700">
+            {/* Header da Planilha Gerada */}
+            <div className="flex justify-between items-center no-print">
+              <button onClick={() => setPlan(null)} className="text-[#050F41] font-black text-[10px] uppercase hover:tracking-widest transition-all">← Ajustar Dados</button>
+              <button onClick={() => window.print()} className="bg-[#050F41] text-white px-8 py-3 rounded-sm flex items-center gap-3 font-bold text-sm shadow-lg hover:bg-[#FAB932] hover:text-[#050F41] transition-all"><Printer size={18}/> IMPRIMIR DOCUMENTO</button>
+            </div>
+
+            <div className="bg-white rounded-sm shadow-2xl border-t-[12px] border-[#050F41] print-card overflow-hidden">
+              <div className="p-10 bg-[#f8f9fa] border-b border-gray-200">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
+                  <div>
+                    <h2 className="text-4xl font-military text-[#050F41] uppercase tracking-tighter">{formData.name}</h2>
+                    <div className="flex items-center gap-4 mt-2">
+                        <span className="bg-[#079551] text-white text-[10px] px-2 py-1 font-bold rounded">PLANO DE 4 SEMANAS</span>
+                        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">Meta TAF: {formData.targetScore} Pontos</span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 w-full lg:w-auto">
+                    <div className="bg-white p-4 border-2 border-[#FAB932] text-center shadow-sm">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Tempo Alvo</p>
+                      <p className="text-3xl font-mono font-black text-[#050F41]">{plan.targetTimeStr}</p>
+                    </div>
+                    <div className="bg-white p-4 border-2 border-[#050F41] text-center shadow-sm">
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Pace "Cocha"</p>
+                      <p className="text-3xl font-mono font-black text-[#079551]">{plan.trainingPace}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-10 space-y-12">
+                {plan.weeks.map(week => (
+                  <div key={week.week} className="relative">
+                    <div className="flex items-center gap-6 mb-8">
+                      <h3 className="font-military text-2xl text-[#050F41] whitespace-nowrap">SEMANA {week.week}</h3>
+                      <div className="h-[2px] w-full bg-[#050F41]/10"></div>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-3 gap-6">
+                      {week.days.map((day, dIdx) => (
+                        <div key={dIdx} className="bg-white border-[3px] border-gray-50 rounded-lg p-6 hover:border-[#FAB932]/30 transition-all shadow-sm">
+                          <div className="flex justify-between items-center mb-4">
+                            <span className="text-xs font-black text-[#050F41] uppercase tracking-tighter">{day.day}</span>
+                            <div className="h-2 w-2 rounded-full bg-[#079551]"></div>
+                          </div>
+                          <div className="flex items-baseline gap-1 mb-4">
+                            <span className="text-4xl font-black font-mono text-[#050F41]">{day.duration}</span>
+                            <span className="text-xs text-gray-400 font-bold">MIN</span>
+                          </div>
+                          <div className="space-y-3">
+                            <p className="text-[10px] font-black text-[#079551] uppercase border-b border-[#079551]/20 pb-1">{day.focus}</p>
+                            <p className="text-xs text-gray-600 font-medium leading-relaxed italic">
+                              {day.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-[#050F41] p-8 text-white">
+                <div className="grid md:grid-cols-2 gap-8 items-center">
+                    <div className="border-l-4 border-[#FAB932] pl-6">
+                        <p className="text-xs font-bold text-[#FAB932] uppercase mb-2">Dica do EP:</p>
+                        <p className="text-[11px] leading-relaxed opacity-90 italic">
+                            "A consistência supera a intensidade. Se hoje o treino pareceu fácil, ótimo! Você está construindo mitocôndrias e fortalecendo seu coração sem se quebrar. O resultado virá no dia do TAF."
+                        </p>
+                    </div>
+                    <div className="text-[9px] opacity-60 text-right uppercase tracking-[0.2em]">
+                        Gerado via Cocha no TAF - Sistema de Inteligência Esportiva
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Footer minimalista */}
+      <footer className="mt-8 text-center no-print">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">© 2024 - Missão Dada é Missão Cumprida</p>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
+
