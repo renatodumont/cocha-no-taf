@@ -3,311 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cocha no TAF - Gerador de Planilha</title>
-    
-    <!-- Fontes Militares e Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Graduate&family=Montserrat:wght@300;400;600;700&family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS CDN -->
+    <title>Roteiro: A Lei do Leão</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- React & Babel CDN para rodar JSX no navegador -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        navy: '#050F41',
-                        gold: '#FAB932',
-                        brazilGreen: '#079551',
-                    },
-                    fontFamily: {
-                        military: ['"Stardos Stencil"', 'cursive'],
-                        stencil: ['Graduate', 'serif'],
-                        sans: ['Montserrat', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
         @media print {
-            .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .print-card { border: 1px solid #050F41 !important; box-shadow: none !important; }
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background-color: white !important;
+                padding: 0 !important;
+            }
+            .script-container {
+                box-shadow: none !important;
+                border: none !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
         }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .speech {
+            margin-bottom: 2rem; /* Espaço generoso entre as falas */
+            line-height: 1.6;
+        }
+        .highlight {
+            font-weight: 800;
+            color: #1a202c;
+            text-transform: uppercase;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-900">
-    <div id="root"></div>
+<body class="bg-gray-100 p-4 md:p-8 font-serif">
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <div class="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-lg script-container">
+        
+        <!-- Cabeçalho -->
+        <header class="border-b-2 border-gray-200 pb-4 mb-8 text-center">
+            <h1 class="text-3xl font-bold uppercase tracking-widest">A Lei do Leão</h1>
+            <p class="text-gray-600 mt-2">Roteiro de Teatro</p>
+        </header>
 
-        // Ícones em SVG para evitar dependências de fontes externas lentas
-        const TrophyIcon = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-        );
+        <!-- Botão de Impressão -->
+        <div class="no-print flex justify-end mb-6">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full flex items-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Imprimir Roteiro
+            </button>
+        </div>
 
-        // --- Dados da Tabela TAF (Masculino 2400m) ---
-        const TAF_DATA = [
-            { range: [18, 25], scores: { 50: "14:30", 60: "13:30", 70: "12:18", 80: "11:18", 90: "10:12", 100: "09:36" } },
-            { range: [26, 33], scores: { 50: "15:00", 60: "14:00", 70: "12:42", 80: "11:42", 90: "10:36", 100: "10:00" } },
-            { range: [34, 39], scores: { 50: "15:30", 60: "14:30", 70: "13:24", 80: "12:24", 90: "11:36", 100: "10:48" } },
-            { range: [40, 45], scores: { 50: "16:24", 60: "15:36", 70: "14:18", 80: "13:00", 90: "12:24", 100: "11:36" } },
-            { range: [46, 49], scores: { 50: "17:30", 60: "16:12", 70: "15:24", 80: "14:36", 90: "14:00", 100: "13:12" } },
-            { range: [50, 100], scores: { 50: "18:48", 60: "17:24", 70: "16:42", 80: "16:00", 90: "15:36", 100: "14:48" } }
-        ];
+        <!-- Conteúdo do Roteiro -->
+        <article class="text-lg text-gray-800">
 
-        const App = () => {
-            const [formData, setFormData] = useState({
-                name: '',
-                age: '',
-                time2400: '',
-                dist12min: '',
-                targetScore: '70',
-                includeWalking: true,
-            });
+            <div class="speech">
+                <span class="highlight">NARRADOR:</span> Há muito tempo, O Rei da Selva convocou uma reunião urgente (barulho de corneta):
+            </div>
 
-            const [plan, setPlan] = useState(null);
-            const [currentScore, setCurrentScore] = useState(null);
+            <div class="speech">
+                <span class="highlight">LEÃO:</span> Roaaaaaaar (rugido do leão): - Atenção, atenção!!! Quero que se apresente, diante de mim, o Alto Lorde das Feras Selvagens e o Príncipe das Gazelas Listradas!!!
+            </div>
 
-            const timeToSeconds = (timeStr) => {
-                if (!timeStr || !timeStr.includes(':')) return 0;
-                const [m, s] = timeStr.split(':').map(Number);
-                return (m * 60) + s;
-            };
+            <div class="speech">
+                <span class="highlight">NARRADOR:</span> Assustado, o Alto Lorde das Feras Selvagens se aproximou do Príncipe das Gazelas Listradas e perguntou:
+            </div>
 
-            const secondsToTime = (totalSeconds) => {
-                const m = Math.floor(totalSeconds / 60);
-                const s = Math.round(totalSeconds % 60);
-                return `${m}:${s < 10 ? '0' : ''}${s}`;
-            };
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, acha que devemos mesmo comparecer diante do imponente Rei da Selva? Quando o leão faz um convite assim, geralmente, alguém vira jantar!!! Sinto cheiro de churrasco…
+            </div>
 
-            // Cálculo do score atual
-            useEffect(() => {
-                const age = parseInt(formData.age);
-                const timeSec = timeToSeconds(formData.time2400);
-                if (age && timeSec > 0) {
-                    const row = TAF_DATA.find(r => age >= r.range[0] && age <= r.range[1]);
-                    if (row) {
-                        let bestScore = 0;
-                        Object.entries(row.scores).forEach(([score, timeLimit]) => {
-                            if (timeSec <= timeToSeconds(timeLimit)) {
-                                if (parseInt(score) > bestScore) bestScore = parseInt(score);
-                            }
-                        });
-                        setCurrentScore(bestScore);
-                    }
-                } else { setCurrentScore(null); }
-            }, [formData.age, formData.time2400]);
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Oba!! Vai ser uma festa, então? Não gosto de carne, mas amo uma diversão!! Estou animado!!! (a gazela assobia entusiasmada)
+            </div>
 
-            const generatePlan = (e) => {
-                e.preventDefault();
-                
-                let d12 = parseFloat(formData.dist12min);
-                if (!d12 && formData.time2400) {
-                    const time2400Min = timeToSeconds(formData.time2400) / 60;
-                    d12 = 2400 * (12 / time2400Min);
-                }
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Não seja tolo, no caso, não seremos convidados, mas sim… (pausa dramática) o prato principal!!!! (voz nervosa e amedrontada)
+            </div>
 
-                if (!d12) return;
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Pare com isso!!! Não podemos nos opor ao convite real. Vai ficar tudo bem!!
+            </div>
 
-                const basePace = 12 / (d12 / 1000);
-                const trainingPace = basePace * 1.25; 
-                
-                const row = TAF_DATA.find(r => parseInt(formData.age) >= r.range[0] && parseInt(formData.age) <= r.range[1]);
-                const targetTimeStr = row ? row.scores[formData.targetScore] : "00:00";
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu não estaria tão certo disso. Afinal, não há jantar mais apetitoso para um leão do que uma Fera Selvagem, como eu, ou uma Gazela Listrada como você.
+            </div>
 
-                const weeks = [];
-                let currentVolume = 24;
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Entendo a sua preocupação, mas o Leão é uma fera muito honrada e jamais tentaria nos enganar.
+            </div>
 
-                for (let w = 1; w <= 4; w++) {
-                    const weekData = {
-                        week: w,
-                        days: [
-                            { day: 'Segunda', type: 'Volume', focus: 'Construção' },
-                            { day: 'Quarta', type: 'Leve', focus: 'Recuperação' },
-                            { day: 'Sexta', type: 'Ritmo', focus: 'Adaptação' }
-                        ]
-                    };
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Talvez você tenha mesmo razão. Vamos ao encontro dele para saber o que ele quer de nós. 
+            </div>
 
-                    weekData.days = weekData.days.map((d, index) => {
-                        const dailyModifier = index === 1 ? 0.8 : (index === 2 ? 1.15 : 1.0);
-                        const duration = Math.min(Math.round(currentVolume * dailyModifier), 60);
-                        let desc = '';
-                        if (formData.includeWalking) {
-                            const run = w < 3 ? "2'" : "3'";
-                            const walk = w < 3 ? "2'" : "1'";
-                            desc = `Intervalado: ${run} Corrida / ${walk} Caminhada. Ritmo: ${secondsToTime(trainingPace * 60)}/km.`;
-                        } else {
-                            desc = `Corrida Contínua "Cocha". Ritmo: ${secondsToTime(trainingPace * 60)} min/km.`;
-                        }
-                        return { ...d, duration, description: desc };
-                    });
-                    weeks.push(weekData);
-                    currentVolume *= 1.10;
-                }
-                setPlan({ weeks, targetTimeStr, trainingPace: secondsToTime(trainingPace * 60) });
-            };
+            <div class="speech">
+                <span class="highlight">NARRADOR:</span> O Príncipe das Gazelas Listradas e o Alto Lorde das Feras Selvagens foram até o do Rei da Selva que, ao avistá-los, disse com ar amigável:
+            </div>
 
-            return (
-                <div className="min-h-screen">
-                    {/* Header */}
-                    <header className="bg-navy text-white py-6 px-4 shadow-xl border-b-8 border-gold no-print">
-                        <div className="max-w-6xl mx-auto flex justify-between items-center">
-                            <div className="flex items-center gap-4">
-                                <div className="bg-gold p-2 rounded transform -rotate-2">
-                                    <TrophyIcon />
-                                </div>
-                                <div>
-                                    <h1 className="text-3xl md:text-5xl font-military tracking-tighter uppercase leading-none">Cocha no TAF</h1>
-                                    <p className="text-[10px] font-stencil tracking-[0.4em] text-brazilGreen mt-1">ESTRATÉGIA & EVOLUÇÃO</p>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
+            <div class="speech">
+                <span class="highlight">LEÃO:</span> - Sejam bem vindos. Eu os convoquei, pois tive uma ideia genial!!! 
+            </div>
 
-                    <main className="max-w-6xl mx-auto px-4 mt-8 mb-20">
-                        {!plan ? (
-                            <div className="grid lg:grid-cols-3 gap-8 animate-fade-in">
-                                {/* Lateral: Dica do EP */}
-                                <div className="lg:col-span-1 space-y-6">
-                                    <div className="bg-navy text-white p-6 rounded-lg shadow-xl border-t-4 border-gold">
-                                        <div className="flex items-start gap-3 mb-4 text-gold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
-                                            <h3 className="font-bold text-sm uppercase">Dica do EP: Re-teste</h3>
-                                        </div>
-                                        <p className="text-xs leading-relaxed opacity-90 mb-4">
-                                            Sua última corrida foi em <strong>setembro do ano passado</strong>. Em 5 meses, sua fisiologia mudou.
-                                        </p>
-                                        <div className="bg-white/10 p-4 rounded text-xs italic">
-                                            "A tabela é apenas uma referência. Para que este plano funcione, faça um novo <strong>teste de 12 minutos</strong> hoje. Dados defasados geram treinos ineficientes."
-                                        </div>
-                                    </div>
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> A última vez que ouvi algo assim corri uns 10 km e só escapei por um milagre!! Opa!! Acho que falei demais…
+            </div>
 
-                                    {currentScore !== null && (
-                                        <div className="bg-brazilGreen text-white p-6 rounded-lg shadow-xl text-center">
-                                            <p className="text-[10px] uppercase font-black opacity-80">Score Atual Estimado</p>
-                                            <h2 className="text-5xl font-military mt-1">{currentScore} pts</h2>
-                                        </div>
-                                    )}
-                                </div>
+            <div class="speech">
+                <span class="highlight">LEÃO:</span> (limpa a garganta) Como eu ia dizendo, quero instituir uma lei para que reine a paz e possamos conviver em harmonia. 
+            </div>
 
-                                {/* Form */}
-                                <form onSubmit={generatePlan} className="lg:col-span-2 bg-white p-8 rounded-lg shadow-xl space-y-8">
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div className="space-y-4">
-                                            <label className="text-[10px] font-black uppercase text-gray-400">Dados do Atleta</label>
-                                            <input required type="text" placeholder="Nome" className="w-full px-4 py-3 border-2 border-gray-100 rounded outline-none focus:border-navy font-bold text-sm uppercase" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <input required type="number" placeholder="Idade" className="w-full px-4 py-3 border-2 border-gray-100 rounded outline-none focus:border-gold font-bold" value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} />
-                                                <select className="w-full px-4 py-3 border-2 border-gray-100 rounded bg-white outline-none focus:border-brazilGreen font-bold text-xs" value={formData.targetScore} onChange={e => setFormData({...formData, targetScore: e.target.value})}>
-                                                    <option value="50">Meta: 50 pts</option>
-                                                    <option value="70">Meta: 70 pts</option>
-                                                    <option value="100">Meta: 100 pts</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <label className="text-[10px] font-black uppercase text-gray-400">Performance Atual</label>
-                                            <input required type="number" placeholder="Teste 12 min (Metros Hoje)" className="w-full px-4 py-3 border-2 border-gold rounded outline-none shadow-sm font-bold" value={formData.dist12min} onChange={e => setFormData({...formData, dist12min: e.target.value})} />
-                                            <input type="text" placeholder="Último 2400m (Ex: 14:00)" className="w-full px-4 py-3 border-2 border-gray-100 rounded outline-none font-mono" value={formData.time2400} onChange={e => setFormData({...formData, time2400: e.target.value})} />
-                                        </div>
-                                    </div>
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> Curioso isso de ver paz e leão, assim, ao mesmo tempo, não é mesmo? E o que Vossa Majestade quer em troca?
+            </div>
 
-                                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded border border-gray-200">
-                                        <div>
-                                            <span className="text-xs font-bold text-navy block">INCLUIR CAMINHADA?</span>
-                                            <span className="text-[10px] text-gray-400">Recomendado para baixo condicionamento.</span>
-                                        </div>
-                                        <button type="button" onClick={() => setFormData({...formData, includeWalking: !formData.includeWalking})} className={`w-12 h-6 rounded-full transition-colors relative ${formData.includeWalking ? 'bg-brazilGreen' : 'bg-gray-300'}`}>
-                                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${formData.includeWalking ? 'left-7' : 'left-1'}`} />
-                                        </button>
-                                    </div>
+            <div class="speech">
+                <span class="highlight">LEÃO:</span> Ao invés de persegui-los e matá-los, quero protegê-los dos seus inimigos, desde que façam o juramento de jamais nos atacar!!!
+            </div>
 
-                                    <button type="submit" className="w-full bg-navy text-white py-5 rounded font-military text-2xl tracking-[0.2em] hover:bg-slate-800 transition-all shadow-lg">
-                                        GERAR ESTRATÉGIA
-                                    </button>
-                                </form>
-                            </div>
-                        ) : (
-                            <div className="animate-fade-in space-y-6">
-                                <div className="flex justify-between items-center no-print">
-                                    <button onClick={() => setPlan(null)} className="text-navy font-black text-[10px] uppercase">← Voltar</button>
-                                    <button onClick={() => window.print()} className="bg-navy text-white px-8 py-3 rounded font-bold text-sm shadow-lg">IMPRIMIR PLANILHA</button>
-                                </div>
+            <div class="speech">
+                <span class="highlight">NARRADOR:</span> Em seguida, o leão ordenou que eles reunissem seus amigos e parentes para levá-los a um lugar que seria protegido por leões. Entusiasmado, o Príncipe das Gazelas Listradas disse:
+            </div>
 
-                                <div className="bg-white rounded shadow-2xl border-t-[12px] border-navy print-card overflow-hidden">
-                                    <div className="p-8 bg-gray-50 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                        <div>
-                                            <h2 className="text-4xl font-military text-navy uppercase">{formData.name}</h2>
-                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Missão: {formData.targetScore} Pontos no TAF</p>
-                                        </div>
-                                        <div className="flex gap-4">
-                                            <div className="bg-white p-4 border-2 border-gold text-center min-w-[120px]">
-                                                <p className="text-[9px] font-black text-gray-400 uppercase">Tempo Alvo</p>
-                                                <p className="text-2xl font-mono font-black">{plan.targetTimeStr}</p>
-                                            </div>
-                                            <div className="bg-white p-4 border-2 border-brazilGreen text-center min-w-[120px]">
-                                                <p className="text-[9px] font-black text-gray-400 uppercase">Pace "Cocha"</p>
-                                                <p className="text-2xl font-mono font-black text-brazilGreen">{plan.trainingPace}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Majestade, você é sempre citado como um dos mais justos e honrados animais. Em nome de todas as Gazelas Listradas quero agradecer do fundo das nossas listras (Nesse momento, o Alto Lorde e o Príncipe fazem reverência diante do Leão)
+            </div>
 
-                                    <div className="p-8 space-y-10">
-                                        {plan.weeks.map(week => (
-                                            <div key={week.week}>
-                                                <div className="flex items-center gap-4 mb-6">
-                                                    <h3 className="font-military text-xl text-navy">SEMANA {week.week}</h3>
-                                                    <div className="h-px flex-grow bg-gray-200"></div>
-                                                </div>
-                                                <div className="grid md:grid-cols-3 gap-6">
-                                                    {week.days.map((day, idx) => (
-                                                        <div key={idx} className="border-2 border-gray-50 p-6 rounded-lg">
-                                                            <div className="flex justify-between items-center mb-2">
-                                                                <span className="text-[10px] font-black text-navy uppercase">{day.day}</span>
-                                                                <span className="text-[9px] font-bold text-brazilGreen uppercase">{day.type}</span>
-                                                            </div>
-                                                            <p className="text-3xl font-black font-mono mb-2">{day.duration}<span className="text-xs ml-1">MIN</span></p>
-                                                            <p className="text-[10px] font-black text-gray-400 uppercase border-b mb-2 pb-1">{day.focus}</p>
-                                                            <p className="text-xs text-gray-600 leading-relaxed italic">{day.description}</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+            <div class="speech">
+                <span class="highlight">NARRADOR:</span> O Alto Lorde das Feras e O Príncipe das Gazelas Listradas se despediram do Leão e foram encontrar os seus pares. Todavia, o Alto Lorde das Feras Selvagens parou em um lugar reservado e disse desconfiado:
+            </div>
 
-                                    <div className="bg-navy p-6 text-white text-xs border-t-4 border-gold">
-                                        <p className="font-bold text-gold uppercase mb-1">Dica do EP:</p>
-                                        <p className="opacity-80 leading-relaxed">
-                                            "A planilha 'Cocha' foca em volume. Se você treinar no ritmo sugerido, seu corpo aprenderá a queimar gordura e poupar glicogênio. No dia do TAF, você terá a reserva necessária para acelerar."
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </main>
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, meu coração não está certo do que devemos fazer. Como teremos certeza de que o leão está falando a verdade e é confiável?
+            </div>
 
-                    <footer className="text-center py-10 no-print">
-                        <p className="text-[10px] font-bold text-gray-300 uppercase tracking-[0.3em]">Cocha no TAF - Estratégia é Meio Caminho</p>
-                    </footer>
-                </div>
-            );
-        };
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Como você ainda é capaz de duvidar? Deixe de ser desconfiado!
+            </div>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Prefiro ser desconfiado do que ser sobremesa de jantar real!!!
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - De todos os animais, ele é o mais honrado. Além disso, sendo tão forte e poderoso, não precisaria de um truque para conseguir o próprio jantar. 
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Às vezes, por estar mais velho e preguiçoso, ele pode não querer mais ficar caçando o seu jantar por aí. Sinto cheiro de armadilha no ar (barulho do alto lorde farejando). 
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Para com isso! Você ouviu o que o Leão disse: A lei irá proibir que os leões nos ataquem e, mais que isso, irá nos assegurar que eles nos protejam! Só sombra e água fresca… não quero outra vida!!! (sorriso empolgado)
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu continuo me perguntando o que o Leão ganha com esse acordo…
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Bem, caro amigo, a lei é para todos. Temos nossos direitos, mas também teremos deveres!! Tanto as gazelas como as feras selvagens se comprometerão a não atacar mais os leões!!!
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Ele está nos enganando. Nunca, em toda a história, uma gazela ou fera selvagem atacou um leão!!! Você é uma gazela ou… uma anta?
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Não seja pessimista! Veja pelo lado positivo: se ele estiver falando a verdade, nós nunca mais teremos que nos preocupar com a nossa segurança. 
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Hum… sei… vai sonhando! (a fera selvagem murmura)
+            </div>
+
+            <div class="speech">
+                <span class="highlight">NARRADOR:</span> Decidido, o príncipe das gazelas listradas procurou por todas as gazelas e, ao encontrá-las, disse: 
+            </div>
+
+            <div class="speech">
+                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> Guiarei todos vocês até o cânion do rei da Selva, o Leão!!! Lá teremos proteção e grama verde… que vida boa!!! 
+            </div>
+
+            <div class="speech italic text-gray-700 bg-gray-50 p-4 border-l-4 border-gray-300">
+                <span class="highlight">NARRADOR:</span> Já o Lorde das Feras Selvagens retornou a sua horda e, desconfiado, nada falou sobre a proposta do Leão. E é por isso que, até os tempos modernos, as feras selvagens temem os leões e outros predadores. E é pelo mesmo motivo que, hoje em dia, não existe mais nenhuma gazela listrada! 
+            </div>
+
+            <div class="mt-12 p-6 border-2 border-dashed border-gray-300 rounded-lg text-center italic bg-yellow-50">
+                <h3 class="font-bold not-italic mb-2">MORAL DA HISTÓRIA:</h3>
+                Seja sensato e desconfie de tudo o que vem fácil. Ofertas muito boas podem esconder segundas intenções.
+            </div>
+
+        </article>
+    </div>
+
+    <footer class="text-center mt-8 text-gray-500 no-print">
+        Fim do Roteiro
+    </footer>
+
 </body>
 </html>
-
