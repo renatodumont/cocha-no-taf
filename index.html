@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roteiro: A Lei do Leão</title>
+    <title>Roteiro: A Lei do Leão (Versão Azul)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
@@ -20,184 +20,194 @@
                 width: 100% !important;
                 max-width: 100% !important;
             }
+            /* Garante que o azul apareça na impressão se as configurações permitirem */
+            .text-blue-700 {
+                color: #1d4ed8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
         .speech {
-            margin-bottom: 2rem; /* Espaço generoso entre as falas */
+            margin-bottom: 2.5rem; /* Espaço generoso entre as falas */
             line-height: 1.6;
         }
         .highlight {
             font-weight: 800;
-            color: #1a202c;
             text-transform: uppercase;
+        }
+        /* Classe específica para falas destacadas em azul */
+        .blue-role {
+            color: #1d4ed8; /* Azul forte para leitura */
         }
     </style>
 </head>
 <body class="bg-gray-100 p-4 md:p-8 font-serif">
 
-    <div class="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-lg script-container">
+    <div class="max-w-3xl mx-auto bg-white p-8 shadow-lg rounded-lg script-container border-t-8 border-blue-600">
         
         <!-- Cabeçalho -->
         <header class="border-b-2 border-gray-200 pb-4 mb-8 text-center">
-            <h1 class="text-3xl font-bold uppercase tracking-widest">A Lei do Leão</h1>
-            <p class="text-gray-600 mt-2">Roteiro de Teatro</p>
+            <h1 class="text-3xl font-bold uppercase tracking-widest text-gray-900">A Lei do Leão</h1>
+            <p class="text-gray-600 mt-2 font-sans italic">Roteiro de Teatro - Edição com Destaque Azul</p>
         </header>
 
         <!-- Botão de Impressão -->
-        <div class="no-print flex justify-end mb-6">
-            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full flex items-center transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="no-print flex justify-center mb-10">
+            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full flex items-center transition-all shadow-md active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
-                Imprimir Roteiro
+                IMPRIMIR ROTEIRO
             </button>
         </div>
 
         <!-- Conteúdo do Roteiro -->
-        <article class="text-lg text-gray-800">
+        <article class="text-xl text-gray-800 leading-relaxed">
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">NARRADOR:</span> Há muito tempo, O Rei da Selva convocou uma reunião urgente (barulho de corneta):
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">LEÃO:</span> Roaaaaaaar (rugido do leão): - Atenção, atenção!!! Quero que se apresente, diante de mim, o Alto Lorde das Feras Selvagens e o Príncipe das Gazelas Listradas!!!
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">NARRADOR:</span> Assustado, o Alto Lorde das Feras Selvagens se aproximou do Príncipe das Gazelas Listradas e perguntou:
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, acha que devemos mesmo comparecer diante do imponente Rei da Selva? Quando o leão faz um convite assim, geralmente, alguém vira jantar!!! Sinto cheiro de churrasco…
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, acha que devemos mesmo comparecer diante do imponente Rei da Selva? Quando o leão faz um convite assim, geralmente, alguém vira jantar!!! Sinto cheiro de churrasco…
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Oba!! Vai ser uma festa, então? Não gosto de carne, mas amo uma diversão!! Estou animado!!! (a gazela assobia entusiasmada)
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Oba!! Vai ser uma festa, então? Não gosto de carne, mas amo uma diversão!! Estou animado!!! (a gazela assobia entusiasmada)
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Não seja tolo, no caso, não seremos convidados, mas sim… (pausa dramática) o prato principal!!!! (voz nervosa e amedrontada)
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Não seja tolo, no caso, não seremos convidados, mas sim… (pausa dramática) o prato principal!!!! (voz nervosa e amedrontada)
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Pare com isso!!! Não podemos nos opor ao convite real. Vai ficar tudo bem!!
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Pare com isso!!! Não podemos nos opor ao convite real. Vai ficar tudo bem!!
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu não estaria tão certo disso. Afinal, não há jantar mais apetitoso para um leão do que uma Fera Selvagem, como eu, ou uma Gazela Listrada como você.
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu não estaria tão certo disso. Afinal, não há jantar mais apetitoso para um leão do que uma Fera Selvagem, como eu, ou uma Gazela Listrada como você.
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Entendo a sua preocupação, mas o Leão é uma fera muito honrada e jamais tentaria nos enganar.
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Entendo a sua preocupação, mas o Leão é uma fera muito honrada e jamais tentaria nos enganar.
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Talvez você tenha mesmo razão. Vamos ao encontro dele para saber o que ele quer de nós. 
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Talvez você tenha mesmo razão. Vamos ao encontro dele para saber o que ele quer de nós. 
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">NARRADOR:</span> O Príncipe das Gazelas Listradas e o Alto Lorde das Feras Selvagens foram até o do Rei da Selva que, ao avistá-los, disse com ar amigável:
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">LEÃO:</span> - Sejam bem vindos. Eu os convoquei, pois tive uma ideia genial!!! 
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> A última vez que ouvi algo assim corri uns 10 km e só escapei por um milagre!! Opa!! Acho que falei demais…
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> A última vez que ouvi algo assim corri uns 10 km e só escapei por um milagre!! Opa!! Acho que falei demais…
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">LEÃO:</span> (limpa a garganta) Como eu ia dizendo, quero instituir uma lei para que reine a paz e possamos conviver em harmonia. 
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> Curioso isso de ver paz e leão, assim, ao mesmo tempo, não é mesmo? E o que Vossa Majestade quer em troca?
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> Curioso isso de ver paz e leão, assim, ao mesmo tempo, não é mesmo? E o que Vossa Majestade quer em troca?
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">LEÃO:</span> Ao invés de persegui-los e matá-los, quero protegê-los dos seus inimigos, desde que façam o juramento de jamais nos atacar!!!
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">NARRADOR:</span> Em seguida, o leão ordenou que eles reunissem seus amigos e parentes para levá-los a um lugar que seria protegido por leões. Entusiasmado, o Príncipe das Gazelas Listradas disse:
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Majestade, você é sempre citado como um dos mais justos e honrados animais. Em nome de todas as Gazelas Listradas quero agradecer do fundo das nossas listras (Nesse momento, o Alto Lorde e o Príncipe fazem reverência diante do Leão)
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Majestade, você é sempre citado como um dos mais justos e honrados animais. Em nome de todas as Gazelas Listradas quero agradecer do fundo das nossas listras (Nesse momento, o Alto Lorde e o Príncipe fazem reverência diante do Leão)
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">NARRADOR:</span> O Alto Lorde das Feras e O Príncipe das Gazelas Listradas se despediram do Leão e foram encontrar os seus pares. Todavia, o Alto Lorde das Feras Selvagens parou em um lugar reservado e disse desconfiado:
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, meu coração não está certo do que devemos fazer. Como teremos certeza de que o leão está falando a verdade e é confiável?
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, meu coração não está certo do que devemos fazer. Como teremos certeza de que o leão está falando a verdade e é confiável?
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Como você ainda é capaz de duvidar? Deixe de ser desconfiado!
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Como você ainda é capaz de duvidar? Deixe de ser desconfiado!
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Prefiro ser desconfiado do que ser sobremesa de jantar real!!!
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Prefiro ser desconfiado do que ser sobremesa de jantar real!!!
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - De todos os animais, ele é o mais honrado. Além disso, sendo tão forte e poderoso, não precisaria de um truque para conseguir o próprio jantar. 
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - De todos os animais, ele é o mais honrado. Além disso, sendo tão forte e poderoso, não precisaria de um truque para conseguir o próprio jantar. 
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Às vezes, por estar mais velho e preguiçoso, ele pode não querer mais ficar caçando o seu jantar por aí. Sinto cheiro de armadilha no ar (barulho do alto lorde farejando). 
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Às vezes, por estar mais velho e preguiçoso, ele pode não querer mais ficar caçando o seu jantar por aí. Sinto cheiro de armadilha no ar (barulho do alto lorde farejando). 
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Para com isso! Você ouviu o que o Leão disse: A lei irá proibir que os leões nos ataquem e, mais que isso, irá nos assegurar que eles nos protejam! Só sombra e água fresca… não quero outra vida!!! (sorriso empolgado)
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Para com isso! Você ouviu o que o Leão disse: A lei irá proibir que os leões nos ataquem e, mais que isso, irá nos assegurar que eles nos protejam! Só sombra e água fresca… não quero outra vida!!! (sorriso empolgado)
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu continuo me perguntando o que o Leão ganha com esse acordo…
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu continuo me perguntando o que o Leão ganha com esse acordo…
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Bem, caro amigo, a lei é para todos. Temos nossos direitos, mas também teremos deveres!! Tanto as gazelas como as feras selvagens se comprometerão a não atacar mais os leões!!!
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Bem, caro amigo, a lei é para todos. Temos nossos direitos, mas também teremos deveres!! Tanto as gazelas como as feras selvagens se comprometerão a não atacar mais os leões!!!
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Ele está nos enganando. Nunca, em toda a história, uma gazela ou fera selvagem atacou um leão!!! Você é uma gazela ou… uma anta?
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Ele está nos enganando. Nunca, em toda a história, uma gazela ou fera selvagem atacou um leão!!! Você é uma gazela ou… uma anta?
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Não seja pessimista! Veja pelo lado positivo: se ele estiver falando a verdade, nós nunca mais teremos que nos preocupar com a nossa segurança. 
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Não seja pessimista! Veja pelo lado positivo: se ele estiver falando a verdade, nós nunca mais teremos que nos preocupar com a nossa segurança. 
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">ALTO LORDE DAS FERAS SELVAGENS:</span> - Hum… sei… vai sonhando! (a fera selvagem murmura)
+                <span class="font-bold uppercase text-gray-900">ALTO LORDE DAS FERAS SELVAGENS:</span> - Hum… sei… vai sonhando! (a fera selvagem murmura)
             </div>
 
-            <div class="speech">
+            <div class="speech blue-role">
                 <span class="highlight">NARRADOR:</span> Decidido, o príncipe das gazelas listradas procurou por todas as gazelas e, ao encontrá-las, disse: 
             </div>
 
             <div class="speech">
-                <span class="font-bold uppercase">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> Guiarei todos vocês até o cânion do rei da Selva, o Leão!!! Lá teremos proteção e grama verde… que vida boa!!! 
+                <span class="font-bold uppercase text-gray-900">PRÍNCIPE DAS GAZELAS LISTRADAS:</span> Guiarei todos vocês até o cânion do rei da Selva, o Leão!!! Lá teremos proteção e grama verde… que vida boa!!! 
             </div>
 
-            <div class="speech italic text-gray-700 bg-gray-50 p-4 border-l-4 border-gray-300">
+            <div class="speech blue-role italic border-l-4 border-blue-200 bg-blue-50 p-4">
                 <span class="highlight">NARRADOR:</span> Já o Lorde das Feras Selvagens retornou a sua horda e, desconfiado, nada falou sobre a proposta do Leão. E é por isso que, até os tempos modernos, as feras selvagens temem os leões e outros predadores. E é pelo mesmo motivo que, hoje em dia, não existe mais nenhuma gazela listrada! 
             </div>
 
-            <div class="mt-12 p-6 border-2 border-dashed border-gray-300 rounded-lg text-center italic bg-yellow-50">
-                <h3 class="font-bold not-italic mb-2">MORAL DA HISTÓRIA:</h3>
-                Seja sensato e desconfie de tudo o que vem fácil. Ofertas muito boas podem esconder segundas intenções.
+            <div class="mt-16 p-8 border-2 border-dashed border-gray-300 rounded-xl text-center italic bg-yellow-50 shadow-inner">
+                <h3 class="font-bold not-italic mb-3 text-2xl text-gray-900">MORAL DA HISTÓRIA:</h3>
+                <p class="text-xl">Seja sensato e desconfie de tudo o que vem fácil. Ofertas muito boas podem esconder segundas intenções.</p>
             </div>
 
         </article>
     </div>
 
-    <footer class="text-center mt-8 text-gray-500 no-print">
-        Fim do Roteiro
+    <footer class="text-center mt-12 mb-8 text-gray-400 no-print font-sans uppercase tracking-widest text-sm">
+        *** Fim do Roteiro Interativo ***
     </footer>
 
 </body>
 </html>
+
