@@ -6,12 +6,12 @@
     <title>Roteiro: A Lei do Leão 🦁</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos Base */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        /* Estilos Base de Tela */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: all 0.3s; }
         
         .speech {
-            margin-bottom: 1.5rem;
-            line-height: 1.4;
+            margin-bottom: 1.8rem;
+            line-height: 1.5;
             break-inside: avoid;
         }
 
@@ -35,10 +35,11 @@
         .color-lorde { color: #2563eb; }         /* Azul */
         .color-principe { color: #ea580c; }      /* Laranja */
 
-        /* Regras de Impressão Padrão */
+        /* Regras de Impressão */
         @media print {
             .no-print { display: none !important; }
-            body { background: white; padding: 0; margin: 0; }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            
             .script-container { 
                 box-shadow: none !important; 
                 border: none !important; 
@@ -46,44 +47,53 @@
                 max-width: 100% !important;
                 padding: 0.5cm !important;
             }
+
+            /* Estilos específicos para o MODO COMPACTO na Impressão */
+            body.compact-mode {
+                font-size: 8.5pt !important; /* Fonte bem reduzida para caber em 1 página */
+            }
+
+            body.compact-mode .script-container {
+                padding: 0.2cm !important;
+                border-top: none !important;
+            }
+
+            body.compact-mode header { margin-bottom: 0.4rem !important; }
+            body.compact-mode header h1 { font-size: 14pt !important; margin: 0 !important; }
+            body.compact-mode header div { font-size: 1.5rem !important; margin: 0 !important; }
+            body.compact-mode header p { font-size: 7pt !important; }
+
+            body.compact-mode .speech { 
+                margin-bottom: 0.25rem !important; 
+                line-height: 1.1 !important; 
+            }
+
+            body.compact-mode .role-title { font-size: 8.5pt !important; }
+
+            body.compact-mode .moral-box { 
+                margin-top: 0.4rem !important; 
+                padding: 0.4rem !important;
+                border-width: 1px !important;
+            }
+            body.compact-mode .moral-box h3 { font-size: 10pt !important; margin-bottom: 0.1rem !important; }
+            body.compact-mode .moral-box p { font-size: 8.5pt !important; line-height: 1 !important; }
+
+            /* Rodapé de página personalizado */
             @page {
-                margin: 1cm;
-                @bottom-center {
-                    content: "- página " counter(page) " de " counter(pages) " -";
-                }
+                margin: 0.8cm;
             }
         }
-
-        /* MODO COMPACTO (Ativado via JS para impressão em página única) */
-        body.compact-mode .script-container {
-            padding: 0.2cm !important;
-        }
-        body.compact-mode header { margin-bottom: 0.5rem !important; padding-bottom: 0.5rem !important; }
-        body.compact-mode header h1 { font-size: 1.5rem !important; }
-        body.compact-mode header div { font-size: 2rem !important; margin: 0 !important; }
-        body.compact-mode .speech { 
-            margin-bottom: 0.35rem !important; 
-            font-size: 9pt !important; 
-            line-height: 1.1 !important; 
-        }
-        body.compact-mode .role-title { font-size: 9pt !important; }
-        body.compact-mode .moral-box { 
-            margin-top: 0.5rem !important; 
-            padding: 0.5rem !important;
-            font-size: 9pt !important;
-        }
-        body.compact-mode .moral-box h3 { font-size: 10pt !important; margin-bottom: 0.2rem !important; }
     </style>
 </head>
 <body class="bg-slate-100 p-4 md:p-8">
 
-    <div id="scriptContent" class="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-xl rounded-xl script-container border-t-8 border-green-600 transition-all">
+    <div id="scriptContent" class="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-xl rounded-xl script-container border-t-8 border-green-600">
         
         <!-- Cabeçalho -->
-        <header class="border-b-2 border-gray-100 pb-6 mb-8 text-center">
+        <header class="border-b-2 border-gray-100 pb-4 mb-8 text-center">
             <div class="text-5xl mb-2">🦁</div>
             <h1 class="text-3xl font-black uppercase tracking-widest text-gray-900">A Lei do Leão</h1>
-            <p class="text-gray-400 mt-1 font-sans text-xs tracking-widest uppercase">Roteiro Completo</p>
+            <p class="text-gray-400 mt-1 font-sans text-xs tracking-widest uppercase">Roteiro para Página Única</p>
         </header>
 
         <!-- Botões de Controle -->
@@ -95,11 +105,11 @@
                 Impressão Normal
             </button>
 
-            <button onclick="printSinglePage()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center transition-all shadow-md">
+            <button onclick="printSinglePage()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center transition-all shadow-md animate-pulse">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Imprimir em Página Única
+                IMPRIMIR TUDO EM 1 PÁGINA
             </button>
         </div>
 
@@ -249,15 +259,19 @@
 
     <script>
         function printSinglePage() {
-            // Adiciona classe que compacta o layout
+            // Adiciona a classe compacta ao body
             document.body.classList.add('compact-mode');
             
-            // Pequeno delay para garantir que o navegador processe o CSS antes de abrir o diálogo
+            // Aguarda 250ms para o navegador renderizar as mudanças de estilo
             setTimeout(() => {
                 window.print();
-                // Remove a classe após fechar a janela de impressão
-                document.body.classList.remove('compact-mode');
-            }, 100);
+                
+                // Remove a classe após o diálogo de impressão fechar
+                // (alguns navegadores removem imediatamente, outros esperam o fechamento)
+                setTimeout(() => {
+                    document.body.classList.remove('compact-mode');
+                }, 500);
+            }, 250);
         }
     </script>
 </body>
