@@ -6,63 +6,24 @@
     <title>Roteiro: A Lei do Leão 🦁</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos de Impressão */
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: white !important;
-                padding: 0 !important;
-                margin: 0;
-            }
-            .script-container {
-                box-shadow: none !important;
-                border: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 0.5cm !important;
-                margin: 0 !important;
-            }
-            .speech {
-                page-break-inside: avoid;
-                break-inside: avoid;
-            }
-            @page {
-                margin: 1.5cm;
-                @bottom-center {
-                    content: "- página " counter(page) " de " counter(pages) " -";
-                }
-            }
-            .page-footer-print {
-                display: block !important;
-                position: fixed;
-                bottom: -1cm;
-                width: 100%;
-                text-align: center;
-                font-size: 10pt;
-                color: #666;
-            }
-        }
-
-        /* Estilos de Tela */
+        /* Estilos Base */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
         .speech {
-            margin-bottom: 2.2rem;
-            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
             break-inside: avoid;
         }
 
         .role-title {
             font-weight: 800;
             text-transform: uppercase;
+            color: #000000 !important;
             display: inline-flex;
             align-items: center;
-            gap: 0.6rem;
-            margin-bottom: 0.1rem;
-            color: #000000 !important;
+            gap: 0.4rem;
         }
 
-        /* Formatação para o que estiver entre parênteses */
         .instrucao {
             color: #000000 !important;
             font-style: italic;
@@ -70,45 +31,80 @@
         }
 
         /* Cores das Falas */
-        .color-narrador-leao { color: #166534; } 
-        .color-lorde { color: #1d4ed8; }         
-        .color-principe { color: #ea580c; }      
+        .color-narrador-leao { color: #16a34a; } /* Verde */
+        .color-lorde { color: #2563eb; }         /* Azul */
+        .color-principe { color: #ea580c; }      /* Laranja */
 
-        .page-footer-print {
-            display: none;
+        /* Regras de Impressão Padrão */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; margin: 0; }
+            .script-container { 
+                box-shadow: none !important; 
+                border: none !important; 
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 0.5cm !important;
+            }
+            @page {
+                margin: 1cm;
+                @bottom-center {
+                    content: "- página " counter(page) " de " counter(pages) " -";
+                }
+            }
         }
-        
-        .screen-counter {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            text-align: center;
-            margin-top: 1rem;
+
+        /* MODO COMPACTO (Ativado via JS para impressão em página única) */
+        body.compact-mode .script-container {
+            padding: 0.2cm !important;
         }
+        body.compact-mode header { margin-bottom: 0.5rem !important; padding-bottom: 0.5rem !important; }
+        body.compact-mode header h1 { font-size: 1.5rem !important; }
+        body.compact-mode header div { font-size: 2rem !important; margin: 0 !important; }
+        body.compact-mode .speech { 
+            margin-bottom: 0.35rem !important; 
+            font-size: 9pt !important; 
+            line-height: 1.1 !important; 
+        }
+        body.compact-mode .role-title { font-size: 9pt !important; }
+        body.compact-mode .moral-box { 
+            margin-top: 0.5rem !important; 
+            padding: 0.5rem !important;
+            font-size: 9pt !important;
+        }
+        body.compact-mode .moral-box h3 { font-size: 10pt !important; margin-bottom: 0.2rem !important; }
     </style>
 </head>
-<body class="bg-gray-100 p-4 md:p-8 font-serif">
+<body class="bg-slate-100 p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-2xl rounded-2xl script-container border-t-8 border-green-700">
+    <div id="scriptContent" class="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-xl rounded-xl script-container border-t-8 border-green-600 transition-all">
         
         <!-- Cabeçalho -->
         <header class="border-b-2 border-gray-100 pb-6 mb-8 text-center">
             <div class="text-5xl mb-2">🦁</div>
             <h1 class="text-3xl font-black uppercase tracking-widest text-gray-900">A Lei do Leão</h1>
-            <p class="text-gray-400 mt-1 font-sans text-xs tracking-widest uppercase">Script Oficial de Teatro</p>
+            <p class="text-gray-400 mt-1 font-sans text-xs tracking-widest uppercase">Roteiro Completo</p>
         </header>
 
-        <!-- Botão de Impressão -->
-        <div class="no-print flex justify-center mb-8">
-            <button onclick="window.print()" class="bg-green-700 hover:bg-green-800 text-white font-bold py-3 px-10 rounded-2xl flex items-center transition-all shadow-xl active:scale-95 text-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <!-- Botões de Controle -->
+        <div class="no-print flex flex-wrap justify-center gap-4 mb-10">
+            <button onclick="window.print()" class="bg-gray-800 hover:bg-black text-white font-bold py-3 px-6 rounded-lg flex items-center transition-all shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
-                IMPRIMIR ROTEIRO
+                Impressão Normal
+            </button>
+
+            <button onclick="printSinglePage()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center transition-all shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Imprimir em Página Única
             </button>
         </div>
 
-        <!-- Conteúdo do Roteiro -->
-        <article class="text-lg md:text-xl text-gray-800 antialiased">
+        <!-- Texto do Roteiro -->
+        <article class="text-lg text-gray-800">
 
             <div class="speech color-narrador-leao">
                 <span class="role-title">👨 NARRADOR:</span> Há muito tempo, O Rei da Selva convocou uma reunião urgente <span class="instrucao">(barulho de corneta)</span>:
@@ -238,27 +234,32 @@
                 <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> Guiarei todos vocês até o cânion do rei da Selva, o Leão!!! Lá teremos proteção e grama verde… que vida boa!!! 
             </div>
 
-            <div class="speech color-narrador-leao italic border-l-8 border-green-200 bg-green-50 p-6 rounded-r-2xl">
+            <div class="speech color-narrador-leao italic border-l-4 border-green-200 bg-green-50 p-4 rounded-r-lg">
                 <span class="role-title">👨 NARRADOR:</span> Já o Lorde das Feras Selvagens retornou a sua horda e, desconfiado, nada falou sobre a proposta do Leão. E é por isso que, até os tempos modernos, as feras selvagens temem os leões e outros predadores. E é pelo mesmo motivo que, hoje em dia, não existe mais nenhuma gazela listrada! 
             </div>
 
             <!-- MORAL -->
-            <div class="mt-12 p-8 border-4 border-double border-gray-100 rounded-[2.5rem] text-center bg-amber-50 shadow-inner">
-                <h3 class="font-bold text-2xl text-gray-900 uppercase mb-3 tracking-tighter" style="color: black;">Moral da História</h3>
-                <p class="text-xl leading-snug text-amber-900">Seja sensato e desconfie de tudo o que vem fácil. Ofertas muito boas podem esconder segundas intenções.</p>
+            <div class="moral-box mt-8 p-6 border-4 border-double border-gray-100 rounded-3xl text-center bg-amber-50">
+                <h3 class="font-bold text-xl text-gray-900 uppercase mb-2">Moral da História</h3>
+                <p class="text-lg leading-tight text-amber-900">Seja sensato e desconfie de tudo o que vem fácil. Ofertas muito boas podem esconder segundas intenções.</p>
             </div>
 
         </article>
     </div>
 
-    <div class="no-print screen-counter">
-        Numeração automática: "- página X de Y -" (Visível na impressão).
-    </div>
-
-    <footer class="text-center mt-8 mb-4 text-gray-300 no-print font-sans uppercase tracking-[0.3em] text-[10px]">
-        *** Fim do Roteiro ***
-    </footer>
-
+    <script>
+        function printSinglePage() {
+            // Adiciona classe que compacta o layout
+            document.body.classList.add('compact-mode');
+            
+            // Pequeno delay para garantir que o navegador processe o CSS antes de abrir o diálogo
+            setTimeout(() => {
+                window.print();
+                // Remove a classe após fechar a janela de impressão
+                document.body.classList.remove('compact-mode');
+            }, 100);
+        }
+    </script>
 </body>
 </html>
 
