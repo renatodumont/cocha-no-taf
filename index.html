@@ -13,9 +13,8 @@
         .navy-dark-bg { background-color: #001D3D; }
         .gold-text { color: #FFBD26; }
         .gold-border { border-color: #FFBD26; }
-        .glass { background: rgba(0, 45, 94, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .glass { background: rgba(0, 45, 94, 0.98); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         
-        /* Bottom Sheet Animation */
         .modal-enter { transform: translateY(100%); transition: transform 0.3s ease-out; }
         .modal-active { transform: translateY(0); }
         
@@ -29,9 +28,6 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
         .now-indicator {
             position: absolute;
             left: 0;
@@ -50,79 +46,82 @@
             background-color: #ef4444;
             border-radius: 50%;
         }
+        .tab-active { background-color: #002D5E; color: white; border-color: #FFBD26; }
     </style>
 </head>
 <body class="pb-24">
 
     <!-- Header -->
-    <header class="glass sticky top-0 z-50 text-white border-b-2 gold-border p-4 shadow-lg">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-xs uppercase tracking-widest font-bold opacity-80">Marinha do Brasil</h1>
-                <h2 class="text-lg font-bold leading-tight">Comando do 4º Distrito Naval</h2>
-                <p class="text-[10px] gold-text font-semibold uppercase">Visita: C Alte (Refº-FN) Elkfury</p>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="toggleType()" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition">
-                    <i data-lucide="settings-2" class="w-5 h-5 text-white"></i>
-                </button>
+    <header class="glass sticky top-0 z-50 text-white border-b-2 gold-border p-3 shadow-lg">
+        <div class="max-w-md mx-auto flex items-center">
+            <img src="brasao.png" alt="Brasão Marinha" class="h-10 w-auto mr-3 object-contain" onerror="this.style.display='none'">
+            <div class="flex flex-col justify-center">
+                <h1 class="text-[10px] uppercase tracking-widest font-bold opacity-90 leading-none mb-1">Marinha do Brasil</h1>
+                <h2 class="text-xs font-bold leading-tight uppercase">Comando do 4º Distrito Naval</h2>
+                <p class="text-[9px] gold-text font-semibold uppercase leading-none mt-1">Visita: C Alte (Refº-FN) Elkfury</p>
             </div>
         </div>
     </header>
 
     <!-- App Content -->
-    <main class="max-w-md mx-auto p-4" id="app-content">
+    <main class="max-w-md mx-auto p-4">
         
-        <!-- Day Selector Tabs -->
-        <div class="flex space-x-2 overflow-x-auto no-scrollbar mb-6" id="day-tabs">
+        <!-- Day Selector (Fixed and Visible) -->
+        <div class="grid grid-cols-3 gap-2 mb-4" id="day-tabs">
             <!-- Tabs injected by JS -->
         </div>
 
         <!-- Schedule Container -->
         <div class="relative space-y-4" id="schedule-container">
-            <!-- Now Line Indicator (Dynamic) -->
+            <!-- Now Line Indicator -->
             <div id="live-line" class="now-indicator hidden pulse-red"></div>
             <!-- Cards injected by JS -->
         </div>
     </main>
 
     <!-- Quick Access Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 glass border-t gold-border px-2 py-3 z-40">
+    <nav class="fixed bottom-0 left-0 right-0 glass border-t gold-border px-1 py-3 z-40">
         <div class="max-w-md mx-auto flex justify-around items-center">
             <button onclick="openModal('authorities')" class="flex flex-col items-center text-white/70 hover:text-white">
-                <i data-lucide="users" class="w-6 h-6"></i>
-                <span class="text-[10px] mt-1">Autoridades</span>
+                <i data-lucide="users" class="w-5 h-5"></i>
+                <span class="text-[9px] mt-1">Autoridades</span>
             </button>
             <button onclick="openModal('logistics')" class="flex flex-col items-center text-white/70 hover:text-white">
-                <i data-lucide="car" class="w-6 h-6"></i>
-                <span class="text-[10px] mt-1">Viaturas</span>
+                <i data-lucide="car" class="w-5 h-5"></i>
+                <span class="text-[9px] mt-1">Viaturas</span>
             </button>
             <button onclick="openModal('uniforms')" class="flex flex-col items-center text-white/70 hover:text-white">
-                <i data-lucide="shirt" class="w-6 h-6"></i>
-                <span class="text-[10px] mt-1">Uniformes</span>
+                <i data-lucide="shirt" class="w-5 h-5"></i>
+                <span class="text-[9px] mt-1">Uniformes</span>
             </button>
             <button onclick="openModal('stay')" class="flex flex-col items-center text-white/70 hover:text-white">
-                <i data-lucide="home" class="w-6 h-6"></i>
-                <span class="text-[10px] mt-1">Estadia</span>
+                <i data-lucide="home" class="w-5 h-5"></i>
+                <span class="text-[9px] mt-1">Estadia</span>
+            </button>
+            <button onclick="openModal('phones')" class="flex flex-col items-center text-white/70 hover:text-white">
+                <i data-lucide="phone" class="w-5 h-5"></i>
+                <span class="text-[9px] mt-1">Telefones</span>
             </button>
         </div>
     </nav>
 
-    <!-- Modals (Bottom Sheets) -->
+    <!-- Modals -->
     <div id="modal-overlay" class="fixed inset-0 bg-black/60 hidden z-[60]" onclick="closeModal()"></div>
-    
     <div id="bottom-sheet" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[70] modal-enter max-w-md mx-auto shadow-2xl overflow-hidden">
         <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-3 mb-4"></div>
-        <div id="modal-content" class="p-6 max-h-[80vh] overflow-y-auto">
-            <!-- Content injected by JS -->
-        </div>
+        <div id="modal-content" class="p-6 max-h-[80vh] overflow-y-auto"></div>
     </div>
 
     <script>
-        // DATA OBJECTS
-        const appState = {
-            isTravel: false, // Default: Institutional Visit
-            currentDay: '2025-05-05' // Base date from PDF (using 2025 as example)
+        // Mapeamento de Uniformes e Imagens
+        const uniformMapping = {
+            '5.5': { img: 'branco-de-verao.png', label: 'Branco de Verão (5.5)' },
+            '5.3': { img: 'dolma.png', label: 'Dolman (5.3)' },
+            'OP3': { img: 'op3.png', label: 'Operacional do 4ºDN (OP3)' },
+            '6.6': { img: 'camuflado.png', label: 'Camuflado (6.6)' },
+            'ESPORTE AMAZÔNICO': { img: 'esporte-amazonico.png', label: 'Esporte Amazônico' },
+            'PASSEIO': { img: 'passeio.png', label: 'Passeio' },
+            'PASSEIO COMPLETO': { img: 'passeio-completo.png', label: 'Passeio Completo' }
         };
 
         const schedule = [
@@ -130,80 +129,66 @@
                 date: '2025-05-05',
                 label: '05 Mai (Ter)',
                 events: [
-                    { id: '05.01', time: '12:00', title: 'Recepção ao C Alte (Ref-FN) Elkfury', flight: 'GLO 2006', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: 'Participantes: DN-01 e DN-01.1' },
-                    { id: '05.02', time: '12:20', title: 'Deslocamento para Residência Funcional', loc: 'Residência Com4ºDN', uniform: 'OP3', obs: 'Participantes: DN-01 e DN-01.1' },
-                    { id: '05.03', time: '12:45', title: 'Almoço na Residência do Com4ºDN', loc: 'Vila Naval Espadarte', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01 e C Alte Elkfury' },
-                    { id: '05.04', time: '19:30', title: 'Jantar', loc: 'Restaurante Amazônia na Cuia', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01, C Alte Elkfury e DN-02' }
+                    { id: '05.01', time: '12:00', title: 'Recepção ao C Alte (Ref-FN) Elkfury (Voo GOL 2006)', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: 'Participantes: DN-01 e DN-01.1' },
+                    { id: '05.02', time: '12:20', title: 'Deslocamento para a residência funcional do Com4°DN', loc: 'Residência Funcional do Com4°DN', uniform: 'OP3', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury e DN-01.1' },
+                    { id: '05.03', time: '12:45', title: 'Almoço na residência do Com4°DN', loc: 'Vila Naval Espadarte', uniform: 'ESPORTE AMAZÔNICO', obs: 'Participantes: DN-01 e C Alte (Ref°-FN) Elkfury' },
+                    { id: '05.04', time: '19:30', title: 'Jantar', loc: 'Restaurante Amazônia na Cuia', uniform: 'ESPORTE AMAZÔNICO', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury e DN-02' }
                 ]
             },
             {
                 date: '2025-05-06',
                 label: '06 Mai (Qua)',
                 events: [
-                    { id: '06.01', time: '06:00', title: 'Prática de TFM', loc: 'Parque Estadual do Utinga', uniform: 'TFM', obs: 'Participantes: DN-01, C Alte Elkfury' },
-                    { id: '06.02', time: '07:30', title: 'Café da Manhã', loc: 'Residência Funcional do Com4ºDN', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01, C Alte Elkfury e DN-02' },
-                    { id: '06.03', time: '08:20', title: 'Deslocamento para CIABA', loc: 'CIABA', uniform: 'OP3/6.6', obs: '' },
-                    { id: '06.04', time: '08:35', title: 'Honras de recepção ao CPO-01', loc: 'CIABA', uniform: 'OP3/6.6', obs: 'Participantes: C Alte Elkfury e CIABA-01' },
-                    { id: '06.05', time: '09:00', title: 'Palestra: Processos Seletivos CPO', loc: 'Auditório Sylvio de Magalhães Figueiredo', uniform: 'OP3/6.6', obs: 'Todos Oficiais de Val de Cães' },
-                    { id: '06.06', time: '11:00', title: 'Honras de despedidas ao CPO-01', loc: 'CIABA', uniform: 'OP3/6.6', obs: '' },
-                    { id: '06.07', time: '11:30', title: 'Deslocamento para Com4ºDN', loc: 'Lancha Maguary', uniform: 'OP3/6.6', obs: '' },
-                    { id: '06.08', time: '12:20', title: 'Almoço no Com4ºDN', loc: 'Salão Nobre', uniform: 'OP3/6.6', obs: 'Comitiva do Distrito' },
-                    { id: '06.09', time: '14:00', title: 'Palestra: Processos Seletivos CPO', loc: 'Auditório Portal da Amazônia', uniform: 'OP3/6.6', obs: 'Oficiais Com4ºDN, HNBe e CPAOR' },
-                    { id: '06.11', time: '19:30', title: 'Jantar', loc: 'Estação das Docas', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01, C Alte Elkfury e DN-02' }
+                    { id: '06.01', time: '06:00', title: 'Prática de TFM', loc: 'Parque Estadual do Utinga', uniform: '6.6', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury' },
+                    { id: '06.02', time: '07:30', title: 'Café da Manhã', loc: 'Residência Funcional do Com4°DN', uniform: 'ESPORTE AMAZÔNICO', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury e DN-02' },
+                    { id: '06.03', time: '08:20', title: 'Deslocamento para o CIABA', loc: 'CIABA', uniform: 'OP3', obs: '' },
+                    { id: '06.04', time: '08:35', title: 'Honras de recepção ao CPO-01', loc: 'CIABA', uniform: 'OP3', obs: 'Participantes: C Alte (Ref°-FN) Elkfury e CIABA-01' },
+                    { id: '06.05', time: '09:00', title: 'Palestra sobre os Processos Seletivos da CPO', loc: 'CIABA - Auditório Sylvio de Magalhães Figueiredo', uniform: 'OP3', obs: 'Participantes: Oficiais da OM de Val de Cães' },
+                    { id: '06.06', time: '11:00', title: 'Honras de despedidas ao CPO-01', loc: 'CIABA', uniform: 'OP3', obs: '' },
+                    { id: '06.07', time: '11:30', title: 'Deslocamento para o Com4ºDN', loc: 'Lancha Maguary (Embarque no CIABA)', uniform: 'OP3', obs: '' },
+                    { id: '06.08', time: '12:20', title: 'Almoço no Com4ºDN', loc: 'Salão Nobre do Com4°DN', uniform: 'OP3', obs: 'Participantes: Comitiva do 4º Distrito Naval' },
+                    { id: '06.09', time: '14:00', title: 'Palestra sobre os Processos Seletivos da CPO', loc: 'Com4ºDN - Auditório Portal da Amazônia', uniform: 'OP3', obs: 'Participantes: Oficiais do Com4°DN, HNBe e CPAOR' },
+                    { id: '06.11', time: '19:30', title: 'Jantar', loc: 'Estação das Docas', uniform: 'ESPORTE AMAZÔNICO', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury e DN-02' }
                 ]
             },
             {
                 date: '2025-05-07',
                 label: '07 Mai (Qui)',
                 events: [
-                    { id: '07.01', time: '05:50', title: 'Café da Manhã', loc: 'Residência Funcional do Com4ºDN', uniform: 'OP3', obs: '' },
-                    { id: '07.02', time: '06:10', title: 'Deslocamento Aeroporto', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: '' },
-                    { id: '07.03', time: '07:30', title: 'Regresso (Voo Azul 2640)', flight: 'AZU 2640', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: '' }
+                    { id: '07.01', time: '05:50', title: 'Café da Manhã', loc: 'Residência Funcional do Com4°DN', uniform: 'OP3', obs: 'Participantes: DN-01 e C Alte (Ref°-FN) Elkfury' },
+                    { id: '07.02', time: '06:10', title: 'Deslocamento para o Aeroporto', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury e DN-01.1' },
+                    { id: '07.03', time: '07:30', title: 'Regresso (Voo Azul 2640)', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: 'Participantes: DN-01, C Alte (Ref°-FN) Elkfury e DN-01.1' }
                 ]
             }
         ];
 
         const logistics = {
             vtrs: [
-                { id: 1, auth: "V Alte BATISTA", model: "Toyota Corolla", plate: "RWY-6C87", driver: "SO-MG COELHO", phone: "21997777668" },
-                { id: 2, auth: "C Alte (Ref-FN) ELKFURY", model: "Toyota Corolla", plate: "RWY-6D17", driver: "2° SG-MA GOULART", phone: "21973390076" },
-                { id: 3, auth: "C Alte JOSÉ FÁBIO", model: "Toyota Corolla", plate: "SZF-4C02", driver: "1° SG-CP RAFAEL", phone: "91982393991" }
+                { auth: "V Alte BATISTA", model: "TOYOTA COROLLA", plate: "RWY-6C87", driver: "SO-MG COELHO", phone: "21997777668" },
+                { auth: "C Alte (Ref-FN) ELKFURY", model: "TOYOTA COROLLA", plate: "RWY-6D17", driver: "2º SG-MA GOULART", phone: "21973390076" },
+                { auth: "C Alte JOSÉ FÁBIO", model: "TOYOTA COROLLA", plate: "SZF-4C02", driver: "1º SG-CP RAFAEL", phone: "91982393991" }
             ],
-            uniforms: [
-                { title: "OP3", desc: "Operacional do 4º Distrito (Camisa Polo e Calça Operacional)" },
-                { title: "6.6 (Camuflado)", desc: "Uniforme de Campanha da Marinha (Farda completa)" },
-                { title: "Esporte Amazônico", desc: "Calça social, camisa social de manga curta ou Guayabera, sapatos casuais." }
-            ],
-            stay: {
-                loc: "Residência Funcional do Com4°DN",
-                suite: "Suíte Master",
-                period: "05 a 07 de Maio",
-                attendant: "3°SG-AR Laerte"
-            },
-            authorities: [
-                { rank: "V Alte", name: "BATISTA", role: "Comandante do 4º Distrito Naval" },
-                { rank: "C Alte (Ref-FN)", name: "ELKFURY", role: "Secretário da CPO" },
-                { rank: "C Alte", name: "JOSÉ FÁBIO", role: "Chefe do Estado-Maior do Com4ºDN" }
+            phones: [
+                { name: "Estado-Maior (Com4ºDN)", contact: "91999991111", role: "Coordenação" },
+                { name: "Ajudância", contact: "91999992222", role: "Suporte" },
+                { name: "Oficial de Dia", contact: "91999993333", role: "Plantão" }
             ]
         };
 
-        // HELPER FUNCTIONS
-        const getMapsLink = (loc) => `https://www.google.com/maps/search/?api=1&query=Belém+${encodeURIComponent(loc)}`;
-        const getFlightLink = (flight) => {
-            const code = flight.replace(/\s/g, '').replace('GOL', 'GLO').replace('AZU', 'AZU');
-            return `https://pt.flightaware.com/live/flight/${code}`;
-        };
-        const getCheckinLink = (flight) => {
-            if(flight.includes('GOL')) return "https://www.voegol.com.br/check-in";
-            if(flight.includes('AZU')) return "https://www.voeazul.com.br/check-in";
-            return "#";
-        };
+        let currentDayId = '';
 
-        // RENDER LOGIC
         function init() {
             lucide.createIcons();
+            
+            // Detecta data atual
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const hasDay = schedule.find(d => d.date === todayStr);
+            
+            currentDayId = hasDay ? todayStr : schedule[0].date;
+            
             renderTabs();
-            renderSchedule(schedule[0].date);
+            renderSchedule(currentDayId);
             updateIndicator();
             setInterval(updateIndicator, 60000);
         }
@@ -212,85 +197,70 @@
             const container = document.getElementById('day-tabs');
             container.innerHTML = schedule.map(day => `
                 <button onclick="renderSchedule('${day.date}')" id="tab-${day.date}" 
-                    class="flex-shrink-0 px-6 py-2 rounded-full text-sm font-semibold transition-all
-                    ${appState.currentDay === day.date ? 'navy-bg text-white shadow-md' : 'bg-white text-gray-500 border border-gray-200'}">
+                    class="py-3 rounded-xl text-[10px] font-bold transition-all border-2
+                    ${currentDayId === day.date ? 'tab-active' : 'bg-white text-gray-400 border-gray-100 shadow-sm'}">
                     ${day.label}
                 </button>
             `).join('');
         }
 
         function renderSchedule(date) {
-            appState.currentDay = date;
+            currentDayId = date;
             renderTabs();
-            
             const dayData = schedule.find(d => d.date === date);
             const container = document.getElementById('schedule-container');
             
             container.innerHTML = `<div id="live-line" class="now-indicator hidden pulse-red"></div>` + 
-                dayData.events.map(ev => `
-                <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 gold-border relative transition-transform active:scale-[0.98]" id="ev-${ev.id}">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-xl font-bold navy-dark-bg text-white px-3 py-1 rounded-lg">${ev.time}</span>
-                        <button onclick="showUniformDetails('${ev.uniform}')" class="text-[10px] font-bold navy-bg text-white px-2 py-1 rounded-full uppercase tracking-tight">
-                            ${ev.uniform}
-                        </button>
-                    </div>
-                    <h3 class="font-bold text-gray-800 leading-tight mb-1">${ev.title}</h3>
-                    <div class="flex items-center text-gray-500 text-sm mb-2">
-                        <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i>
-                        <a href="${getMapsLink(ev.loc)}" target="_blank" class="underline decoration-gold-text decoration-2 underline-offset-2">${ev.loc}</a>
-                    </div>
-                    
-                    ${ev.flight ? `
-                        <div class="mt-3 flex gap-2">
-                            <a href="${getFlightLink(ev.flight)}" target="_blank" class="flex-1 flex items-center justify-center bg-blue-50 text-blue-700 py-2 rounded-xl text-xs font-bold border border-blue-100">
-                                <i data-lucide="plane" class="w-3 h-3 mr-1"></i> FlightAware
-                            </a>
-                            ${appState.isTravel ? `
-                                <a href="${getCheckinLink(ev.flight)}" target="_blank" class="flex-1 flex items-center justify-center bg-green-50 text-green-700 py-2 rounded-xl text-xs font-bold border border-green-100">
-                                    <i data-lucide="check-square" class="w-3 h-3 mr-1"></i> Fazer Check-in
-                                </a>
-                            ` : ''}
+                dayData.events.map(ev => {
+                    const uInfo = uniformMapping[ev.uniform.toUpperCase()] || { img: 'op3.png', label: ev.uniform };
+                    return `
+                    <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 gold-border relative" id="ev-${ev.id}">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-lg font-bold navy-dark-bg text-white px-3 py-1 rounded-lg">${ev.time}</span>
+                            <div class="flex flex-col items-center" onclick="showUniformDetails('${ev.uniform}')">
+                                <img src="${uInfo.img}" class="h-9 w-auto mb-1 rounded border border-gray-100 object-cover" onerror="this.src='https://via.placeholder.com/40x50?text=U'">
+                                <span class="text-[8px] font-bold text-navy-bg uppercase">${ev.uniform}</span>
+                            </div>
                         </div>
-                    ` : ''}
-                    
-                    ${ev.obs ? `<p class="mt-2 text-[10px] text-gray-400 italic font-medium">${ev.obs}</p>` : ''}
-                </div>
-            `).join('');
+                        <h3 class="font-bold text-gray-800 leading-tight mb-2 text-sm">${ev.title}</h3>
+                        <div class="flex items-start text-gray-500 text-[11px] mb-2">
+                            <i data-lucide="map-pin" class="w-3 h-3 mr-1 mt-0.5 flex-shrink-0 text-navy-bg"></i>
+                            <a href="https://www.google.com/maps/search/?api=1&query=Belém+${encodeURIComponent(ev.loc)}" target="_blank" class="underline decoration-gold-text underline-offset-2 font-medium">${ev.loc}</a>
+                        </div>
+                        ${ev.obs ? `
+                            <div class="mt-3 pt-2 border-t border-gray-50">
+                                <p class="text-[10px] text-gray-500 italic"><b class="text-navy-bg not-italic">Obs:</b> ${ev.obs}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `}).join('');
             
             lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             updateIndicator();
         }
 
         function updateIndicator() {
             const now = new Date();
-            // Para testes, vamos ajustar a data "real" se não estivermos no dia do evento
-            // Mas seguiremos a lógica real aqui:
             const h = now.getHours();
             const m = now.getMinutes();
             const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-            
-            // Format today as YYYY-MM-DD
             const todayStr = now.toISOString().split('T')[0];
             const line = document.getElementById('live-line');
             
-            if (appState.currentDay !== todayStr) {
+            if (currentDayId !== todayStr) {
                 line.classList.add('hidden');
                 return;
             }
 
-            const dayData = schedule.find(d => d.date === appState.currentDay);
-            const events = dayData.events;
-            
-            // Lógica para posicionar a linha
-            // Vamos encontrar entre quais eventos estamos
+            const dayData = schedule.find(d => d.date === currentDayId);
             let targetTop = 0;
             let found = false;
 
-            for (let i = 0; i < events.length; i++) {
-                const el = document.getElementById(`ev-${events[i].id}`);
-                if (timeStr >= events[i].time) {
-                    targetTop = el.offsetTop + (el.offsetHeight / 2); // Centraliza no card
+            for (const ev of dayData.events) {
+                const el = document.getElementById(`ev-${ev.id}`);
+                if (timeStr >= ev.time) {
+                    targetTop = el.offsetTop + (el.offsetHeight / 2);
                     found = true;
                 }
             }
@@ -303,87 +273,87 @@
             }
         }
 
-        // MODAL SYSTEM
         function openModal(type) {
             const content = document.getElementById('modal-content');
             const sheet = document.getElementById('bottom-sheet');
             const overlay = document.getElementById('modal-overlay');
 
             if (type === 'authorities') {
-                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Autoridades</h2>
-                    <div class="space-y-4">
-                        ${logistics.authorities.map(a => `
-                            <div class="flex items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold mr-3">${a.rank.charAt(0)}</div>
-                                <div>
-                                    <p class="font-bold text-gray-800">${a.rank} ${a.name}</p>
-                                    <p class="text-xs text-gray-500">${a.role}</p>
-                                </div>
-                            </div>
-                        `).join('')}
+                content.innerHTML = `<h2 class="text-lg font-bold mb-4 navy-bg text-white p-3 rounded-xl text-center">Autoridades</h2>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold mr-3">VB</div>
+                            <div><p class="font-bold text-sm">V Alte BATISTA</p><p class="text-[10px] text-gray-500">Comandante do 4º Distrito Naval</p></div>
+                        </div>
+                        <div class="flex items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold mr-3">RE</div>
+                            <div><p class="font-bold text-sm">C Alte (Refº-FN) ELKFURY</p><p class="text-[10px] text-gray-500">Secretário da CPO</p></div>
+                        </div>
+                        <div class="flex items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-white font-bold mr-3">JF</div>
+                            <div><p class="font-bold text-sm">C Alte JOSÉ FÁBIO</p><p class="text-[10px] text-gray-500">Chefe do Estado-Maior do Com4ºDN</p></div>
+                        </div>
                     </div>`;
             } else if (type === 'logistics') {
-                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Controle de Viaturas</h2>
+                content.innerHTML = `<h2 class="text-lg font-bold mb-4 navy-bg text-white p-3 rounded-xl text-center">Controle de Viaturas</h2>
                     <div class="space-y-4">
                         ${logistics.vtrs.map(v => `
                             <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200">
-                                <div class="flex justify-between items-start mb-2">
-                                    <div>
-                                        <p class="text-[10px] uppercase font-bold text-gray-400">Autoridade</p>
-                                        <p class="font-bold text-navy">${v.auth}</p>
-                                    </div>
-                                    <span class="bg-gold-text text-black text-[10px] px-2 py-1 rounded font-bold">${v.plate}</span>
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="font-bold text-navy text-xs uppercase">${v.auth}</p>
+                                    <span class="bg-gold-text text-black text-[10px] px-2 py-0.5 rounded font-bold">${v.plate}</span>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2 text-sm mb-3">
-                                    <div>
-                                        <p class="text-[10px] text-gray-400">Modelo</p>
-                                        <p class="font-medium">${v.model}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-400">Motorista</p>
-                                        <p class="font-medium">${v.driver}</p>
-                                    </div>
-                                </div>
+                                <p class="text-[11px] text-gray-500 mb-3">${v.model} • ${v.driver}</p>
                                 <div class="flex gap-2">
-                                    <a href="tel:${v.phone}" class="flex-1 bg-navy-dark-bg text-white py-2 rounded-xl flex items-center justify-center gap-2">
-                                        <i data-lucide="phone" class="w-4 h-4"></i> Ligar
+                                    <a href="tel:${v.phone}" class="flex-1 bg-navy text-white py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-bold">
+                                        <i data-lucide="phone" class="w-3 h-3"></i> Ligar
                                     </a>
-                                    <a href="https://wa.me/55${v.phone}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-xl flex items-center justify-center gap-2">
-                                        <i data-lucide="message-square" class="w-4 h-4"></i> WhatsApp
+                                    <a href="https://wa.me/55${v.phone}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-xl flex items-center justify-center gap-2 text-[11px] font-bold">
+                                        <i data-lucide="message-circle" class="w-3 h-3"></i> WhatsApp
                                     </a>
                                 </div>
                             </div>
                         `).join('')}
                     </div>`;
             } else if (type === 'uniforms') {
-                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Uniformes</h2>
-                    <div class="space-y-3">
-                        ${logistics.uniforms.map(u => `
-                            <div class="p-3 bg-gray-50 rounded-xl border border-gray-200">
-                                <p class="font-bold navy-dark-bg text-white inline-block px-2 py-0.5 rounded text-xs mb-1">${u.title}</p>
-                                <p class="text-sm text-gray-600">${u.desc}</p>
+                // Filtra apenas uniformes usados no programa
+                const usedUniforms = new Set();
+                schedule.forEach(day => day.events.forEach(ev => usedUniforms.add(ev.uniform.toUpperCase())));
+                
+                content.innerHTML = `<h2 class="text-lg font-bold mb-4 navy-bg text-white p-3 rounded-xl text-center">Uniformes Utilizados</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${Array.from(usedUniforms).map(u => {
+                            const info = uniformMapping[u] || { img: 'op3.png', label: u };
+                            return `
+                            <div class="p-3 border border-gray-100 rounded-xl text-center flex flex-col items-center bg-gray-50 shadow-sm">
+                                <img src="${info.img}" class="h-24 w-auto mb-2 rounded shadow-sm" onerror="this.src='https://via.placeholder.com/80x100?text=${u}'">
+                                <p class="text-[9px] font-bold text-navy uppercase leading-tight">${info.label}</p>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>`;
             } else if (type === 'stay') {
-                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Hospedagem</h2>
-                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
-                        <div class="text-center mb-4">
-                            <i data-lucide="building" class="w-12 h-12 mx-auto text-gold-text mb-2"></i>
-                            <p class="font-bold text-lg">${logistics.stay.loc}</p>
-                            <p class="text-gray-500">${logistics.stay.suite}</p>
+                content.innerHTML = `<h2 class="text-lg font-bold mb-4 navy-bg text-white p-3 rounded-xl text-center">Alojamento</h2>
+                    <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 text-center">
+                        <i data-lucide="home" class="w-10 h-10 mx-auto text-navy mb-2"></i>
+                        <p class="font-bold text-navy">Residência Funcional do Com4ºDN</p>
+                        <p class="text-xs text-gray-500 mb-4">Vila Naval Espadarte - Suíte Master</p>
+                        <div class="bg-white p-4 rounded-xl text-left text-[11px] space-y-2 shadow-sm">
+                            <p><b class="text-navy">Período:</b> 05 a 07 de maio de 2025</p>
+                            <p><b class="text-navy">Despenseiro:</b> 3ºSG-AR LAERTE</p>
                         </div>
-                        <hr class="my-4">
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-gray-400 text-sm">Período</span>
-                                <span class="font-bold">${logistics.stay.period}</span>
+                    </div>`;
+            } else if (type === 'phones') {
+                content.innerHTML = `<h2 class="text-lg font-bold mb-4 navy-bg text-white p-3 rounded-xl text-center">Telefones Úteis</h2>
+                    <div class="space-y-3">
+                        ${logistics.phones.map(p => `
+                            <div class="p-3 bg-gray-50 rounded-xl flex justify-between items-center border border-gray-100">
+                                <div><p class="font-bold text-xs text-navy">${p.name}</p><p class="text-[10px] text-gray-500">${p.role}</p></div>
+                                <div class="flex gap-2">
+                                    <a href="tel:${p.contact}" class="p-2 bg-navy text-white rounded-lg"><i data-lucide="phone" class="w-4 h-4"></i></a>
+                                    <a href="https://wa.me/55${p.contact}" target="_blank" class="p-2 bg-green-600 text-white rounded-lg"><i data-lucide="message-circle" class="w-4 h-4"></i></a>
+                                </div>
                             </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-400 text-sm">Despenseiro</span>
-                                <span class="font-bold">${logistics.stay.attendant}</span>
-                            </div>
-                        </div>
+                        `).join('')}
                     </div>`;
             }
             
@@ -396,7 +366,6 @@
         function closeModal() {
             const sheet = document.getElementById('bottom-sheet');
             const overlay = document.getElementById('modal-overlay');
-            
             sheet.classList.remove('modal-active');
             sheet.classList.add('modal-enter');
             setTimeout(() => overlay.classList.add('hidden'), 300);
@@ -406,14 +375,6 @@
             openModal('uniforms');
         }
 
-        function toggleType() {
-            appState.isTravel = !appState.isTravel;
-            renderSchedule(appState.currentDay);
-            const msg = appState.isTravel ? "Modo VIAGEM ativado (Check-in liberado)" : "Modo VISITA INSTITUCIONAL ativado";
-            alert(msg);
-        }
-
-        // Initialize
         window.onload = init;
     </script>
 </body>
