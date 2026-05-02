@@ -1,279 +1,420 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roteiro: A Lei do Leão 🦁</title>
+    <title>Programa de Eventos - Com4ºDN</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Estilos Base de Tela */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; transition: all 0.3s; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .navy-bg { background-color: #002D5E; }
+        .navy-dark-bg { background-color: #001D3D; }
+        .gold-text { color: #FFBD26; }
+        .gold-border { border-color: #FFBD26; }
+        .glass { background: rgba(0, 45, 94, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         
-        .speech {
-            margin-bottom: 1.8rem;
-            line-height: 1.5;
-            break-inside: avoid;
+        /* Bottom Sheet Animation */
+        .modal-enter { transform: translateY(100%); transition: transform 0.3s ease-out; }
+        .modal-active { transform: translateY(0); }
+        
+        .pulse-red {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        .role-title {
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #000000 !important;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .now-indicator {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ef4444;
+            z-index: 20;
         }
-
-        .instrucao {
-            color: #000000 !important;
-            font-style: italic;
-            font-weight: normal;
-        }
-
-        /* Cores das Falas */
-        .color-narrador-leao { color: #16a34a; } /* Verde */
-        .color-lorde { color: #2563eb; }         /* Azul */
-        .color-principe { color: #ea580c; }      /* Laranja */
-
-        /* Regras de Impressão */
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; padding: 0 !important; margin: 0 !important; }
-            
-            .script-container { 
-                box-shadow: none !important; 
-                border: none !important; 
-                width: 100% !important;
-                max-width: 100% !important;
-                padding: 0.5cm !important;
-            }
-
-            /* Estilos específicos para o MODO COMPACTO na Impressão */
-            body.compact-mode {
-                font-size: 8.5pt !important; /* Fonte bem reduzida para caber em 1 página */
-            }
-
-            body.compact-mode .script-container {
-                padding: 0.2cm !important;
-                border-top: none !important;
-            }
-
-            body.compact-mode header { margin-bottom: 0.4rem !important; }
-            body.compact-mode header h1 { font-size: 14pt !important; margin: 0 !important; }
-            body.compact-mode header div { font-size: 1.5rem !important; margin: 0 !important; }
-            body.compact-mode header p { font-size: 7pt !important; }
-
-            body.compact-mode .speech { 
-                margin-bottom: 0.25rem !important; 
-                line-height: 1.1 !important; 
-            }
-
-            body.compact-mode .role-title { font-size: 8.5pt !important; }
-
-            body.compact-mode .moral-box { 
-                margin-top: 0.4rem !important; 
-                padding: 0.4rem !important;
-                border-width: 1px !important;
-            }
-            body.compact-mode .moral-box h3 { font-size: 10pt !important; margin-bottom: 0.1rem !important; }
-            body.compact-mode .moral-box p { font-size: 8.5pt !important; line-height: 1 !important; }
-
-            /* Rodapé de página personalizado */
-            @page {
-                margin: 0.8cm;
-            }
+        .now-indicator::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            background-color: #ef4444;
+            border-radius: 50%;
         }
     </style>
 </head>
-<body class="bg-slate-100 p-4 md:p-8">
+<body class="pb-24">
 
-    <div id="scriptContent" class="max-w-4xl mx-auto bg-white p-8 md:p-12 shadow-xl rounded-xl script-container border-t-8 border-green-600">
+    <!-- Header -->
+    <header class="glass sticky top-0 z-50 text-white border-b-2 gold-border p-4 shadow-lg">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xs uppercase tracking-widest font-bold opacity-80">Marinha do Brasil</h1>
+                <h2 class="text-lg font-bold leading-tight">Comando do 4º Distrito Naval</h2>
+                <p class="text-[10px] gold-text font-semibold uppercase">Visita: C Alte (Refº-FN) Elkfury</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleType()" class="bg-white/10 p-2 rounded-full hover:bg-white/20 transition">
+                    <i data-lucide="settings-2" class="w-5 h-5 text-white"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Content -->
+    <main class="max-w-md mx-auto p-4" id="app-content">
         
-        <!-- Cabeçalho -->
-        <header class="border-b-2 border-gray-100 pb-4 mb-8 text-center">
-            <div class="text-5xl mb-2">🦁</div>
-            <h1 class="text-3xl font-black uppercase tracking-widest text-gray-900">A Lei do Leão</h1>
-            <p class="text-gray-400 mt-1 font-sans text-xs tracking-widest uppercase">Roteiro para Página Única</p>
-        </header>
-
-        <!-- Botões de Controle -->
-        <div class="no-print flex flex-wrap justify-center gap-4 mb-10">
-            <button onclick="window.print()" class="bg-gray-800 hover:bg-black text-white font-bold py-3 px-6 rounded-lg flex items-center transition-all shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                </svg>
-                Impressão Normal
-            </button>
-
-            <button onclick="printSinglePage()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg flex items-center transition-all shadow-md animate-pulse">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                IMPRIMIR TUDO EM 1 PÁGINA
-            </button>
+        <!-- Day Selector Tabs -->
+        <div class="flex space-x-2 overflow-x-auto no-scrollbar mb-6" id="day-tabs">
+            <!-- Tabs injected by JS -->
         </div>
 
-        <!-- Texto do Roteiro -->
-        <article class="text-lg text-gray-800">
+        <!-- Schedule Container -->
+        <div class="relative space-y-4" id="schedule-container">
+            <!-- Now Line Indicator (Dynamic) -->
+            <div id="live-line" class="now-indicator hidden pulse-red"></div>
+            <!-- Cards injected by JS -->
+        </div>
+    </main>
 
-            <div class="speech color-narrador-leao">
-                <span class="role-title">👨 NARRADOR:</span> Há muito tempo, O Rei da Selva convocou uma reunião urgente <span class="instrucao">(barulho de corneta)</span>:
-            </div>
+    <!-- Quick Access Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 glass border-t gold-border px-2 py-3 z-40">
+        <div class="max-w-md mx-auto flex justify-around items-center">
+            <button onclick="openModal('authorities')" class="flex flex-col items-center text-white/70 hover:text-white">
+                <i data-lucide="users" class="w-6 h-6"></i>
+                <span class="text-[10px] mt-1">Autoridades</span>
+            </button>
+            <button onclick="openModal('logistics')" class="flex flex-col items-center text-white/70 hover:text-white">
+                <i data-lucide="car" class="w-6 h-6"></i>
+                <span class="text-[10px] mt-1">Viaturas</span>
+            </button>
+            <button onclick="openModal('uniforms')" class="flex flex-col items-center text-white/70 hover:text-white">
+                <i data-lucide="shirt" class="w-6 h-6"></i>
+                <span class="text-[10px] mt-1">Uniformes</span>
+            </button>
+            <button onclick="openModal('stay')" class="flex flex-col items-center text-white/70 hover:text-white">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-[10px] mt-1">Estadia</span>
+            </button>
+        </div>
+    </nav>
 
-            <div class="speech color-narrador-leao">
-                <span class="role-title">🦁 LEÃO:</span> Roaaaaaaar <span class="instrucao">(rugido do leão)</span>: - Atenção, atenção!!! Quero que se apresente, diante de mim, o Alto Lorde das Feras Selvagens e o Príncipe das Gazelas Listradas!!!
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">👨 NARRADOR:</span> Assustado, o Alto Lorde das Feras Selvagens se aproximou do Príncipe das Gazelas Listradas e perguntou:
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, acha que devemos mesmo comparecer diante do imponente Rei da Selva? Quando o leão faz um convite assim, geralmente, alguém vira jantar!!! Sinto cheiro de churrasco…
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Oba!! Vai ser uma festa, então? Não gosto de carne, mas amo uma diversão!! Estou animado!!! <span class="instrucao">(a gazela assobia entusiasmada)</span>
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Não seja tolo, no caso, não seremos convidados, mas sim… <span class="instrucao">(pausa dramática)</span> o prato principal!!!! <span class="instrucao">(voz nervosa e amedrontada)</span>
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Pare com isso!!! Não podemos nos opor ao convite real. Vai ficar tudo bem!!
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu não estaria tão certo disso. Afinal, não há jantar mais apetitoso para um leão do que uma Fera Selvagem, como eu, ou uma Gazela Listrada como você.
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Entendo a sua preocupação, mas o Leão é uma fera muito honrada e jamais tentaria nos enganar.
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Talvez você tenha mesmo razão. Vamos ao encontro dele para saber o que ele quer de nós. 
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">👨 NARRADOR:</span> O Príncipe das Gazelas Listradas e o Alto Lorde das Feras Selvagens foram até o do Rei da Selva que, ao avistá-los, disse com ar amigável:
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">🦁 LEÃO:</span> - Sejam bem vindos. Eu os convoquei, pois tive uma ideia genial!!! 
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> A última vez que ouvi algo assim corri uns 10 km e só escapei por um milagre!! Opa!! Acho que falei demais…
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">🦁 LEÃO:</span> <span class="instrucao">(limpa a garganta)</span> Como eu ia dizendo, quero instituir uma lei para que reine a paz e possamos conviver em harmonia. 
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> Curioso isso de ver paz e leão, assim, ao mesmo tempo, não é mesmo? E o que Vossa Majestade quer em troca?
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">🦁 LEÃO:</span> Ao invés de persegui-los e matá-los, quero protegê-los dos seus inimigos, desde que façam o juramento de jamais nos atacar!!!
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">👨 NARRADOR:</span> Em seguida, o leão ordenou que eles reunissem seus amigos e parentes para levá-los a um lugar que seria protegido por leões. Entusiasmado, o Príncipe das Gazelas Listradas disse:
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Majestade, você é sempre citado como um dos mais justos e honrados animais. Em nome de todas as Gazelas Listradas quero agradecer do fundo das nossas listras <span class="instrucao">(Nesse momento, o Alto Lorde e o Príncipe fazem reverência diante do Leão)</span>
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">👨 NARRADOR:</span> O Alto Lorde das Feras e O Príncipe das Gazelas Listradas se despediram do Leão e foram encontrar os seus pares. Todavia, o Alto Lorde das Feras Selvagens parou em um lugar reservado e disse desconfiado:
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Príncipe, meu coração não está certo do que devemos fazer. Como teremos certeza de que o leão está falando a verdade e é confiável?
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Como você ainda é capaz de duvidar? Deixe de ser desconfiado!
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Prefiro ser desconfiado do que ser sobremesa de jantar real!!!
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - De todos os animais, ele é o mais honrado. Além disso, sendo tão forte e poderoso, não precisaria de um truque para conseguir o próprio jantar. 
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Às vezes, por estar mais velho e preguiçoso, ele pode não querer mais ficar caçando o seu jantar por aí. Sinto cheiro de armadilha no ar <span class="instrucao">(barulho do alto lorde farejando)</span>. 
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Para com isso! Você ouviu o que o Leão disse: A lei irá proibir que os leões nos ataquem e, mais que isso, irá nos assegurar que eles nos protejam! Só sombra e água fresca… não quero outra vida!!! <span class="instrucao">(sorriso empolgado)</span>
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Eu continuo me perguntando o que o Leão ganha com esse acordo…
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Bem, caro amigo, a lei é para todos. Temos nossos direitos, mas também teremos deveres!! Tanto as gazelas como as feras selvagens se comprometerão a não atacar mais os leões!!!
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Ele está nos enganando. Nunca, em toda a história, uma gazela ou fera selvagem atacou um leão!!! Você é uma gazela ou… uma anta?
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> - Não seja pessimista! Veja pelo lado positivo: se ele estiver falando a verdade, nós nunca mais teremos que nos preocupar com a nossa segurança. 
-            </div>
-
-            <div class="speech color-lorde">
-                <span class="role-title">🐃 ALTO LORDE DAS FERAS SELVAGENS:</span> - Hum… sei… vai sonhando! <span class="instrucao">(a fera selvagem murmura)</span>
-            </div>
-
-            <div class="speech color-narrador-leao">
-                <span class="role-title">👨 NARRADOR:</span> Decidido, o príncipe das gazelas listradas procurou por todas as gazelas e, ao encontrá-las, disse: 
-            </div>
-
-            <div class="speech color-principe">
-                <span class="role-title">🦌 PRÍNCIPE DAS GAZELAS LISTRADAS:</span> Guiarei todos vocês até o cânion do rei da Selva, o Leão!!! Lá teremos proteção e grama verde… que vida boa!!! 
-            </div>
-
-            <div class="speech color-narrador-leao italic border-l-4 border-green-200 bg-green-50 p-4 rounded-r-lg">
-                <span class="role-title">👨 NARRADOR:</span> Já o Lorde das Feras Selvagens retornou a sua horda e, desconfiado, nada falou sobre a proposta do Leão. E é por isso que, até os tempos modernos, as feras selvagens temem os leões e outros predadores. E é pelo mesmo motivo que, hoje em dia, não existe mais nenhuma gazela listrada! 
-            </div>
-
-            <!-- MORAL -->
-            <div class="moral-box mt-8 p-6 border-4 border-double border-gray-100 rounded-3xl text-center bg-amber-50">
-                <h3 class="font-bold text-xl text-gray-900 uppercase mb-2">Moral da História</h3>
-                <p class="text-lg leading-tight text-amber-900">Seja sensato e desconfie de tudo o que vem fácil. Ofertas muito boas podem esconder segundas intenções.</p>
-            </div>
-
-        </article>
+    <!-- Modals (Bottom Sheets) -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/60 hidden z-[60]" onclick="closeModal()"></div>
+    
+    <div id="bottom-sheet" class="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[70] modal-enter max-w-md mx-auto shadow-2xl overflow-hidden">
+        <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-3 mb-4"></div>
+        <div id="modal-content" class="p-6 max-h-[80vh] overflow-y-auto">
+            <!-- Content injected by JS -->
+        </div>
     </div>
 
     <script>
-        function printSinglePage() {
-            // Adiciona a classe compacta ao body
-            document.body.classList.add('compact-mode');
-            
-            // Aguarda 250ms para o navegador renderizar as mudanças de estilo
-            setTimeout(() => {
-                window.print();
-                
-                // Remove a classe após o diálogo de impressão fechar
-                // (alguns navegadores removem imediatamente, outros esperam o fechamento)
-                setTimeout(() => {
-                    document.body.classList.remove('compact-mode');
-                }, 500);
-            }, 250);
+        // DATA OBJECTS
+        const appState = {
+            isTravel: false, // Default: Institutional Visit
+            currentDay: '2025-05-05' // Base date from PDF (using 2025 as example)
+        };
+
+        const schedule = [
+            {
+                date: '2025-05-05',
+                label: '05 Mai (Ter)',
+                events: [
+                    { id: '05.01', time: '12:00', title: 'Recepção ao C Alte (Ref-FN) Elkfury', flight: 'GLO 2006', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: 'Participantes: DN-01 e DN-01.1' },
+                    { id: '05.02', time: '12:20', title: 'Deslocamento para Residência Funcional', loc: 'Residência Com4ºDN', uniform: 'OP3', obs: 'Participantes: DN-01 e DN-01.1' },
+                    { id: '05.03', time: '12:45', title: 'Almoço na Residência do Com4ºDN', loc: 'Vila Naval Espadarte', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01 e C Alte Elkfury' },
+                    { id: '05.04', time: '19:30', title: 'Jantar', loc: 'Restaurante Amazônia na Cuia', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01, C Alte Elkfury e DN-02' }
+                ]
+            },
+            {
+                date: '2025-05-06',
+                label: '06 Mai (Qua)',
+                events: [
+                    { id: '06.01', time: '06:00', title: 'Prática de TFM', loc: 'Parque Estadual do Utinga', uniform: 'TFM', obs: 'Participantes: DN-01, C Alte Elkfury' },
+                    { id: '06.02', time: '07:30', title: 'Café da Manhã', loc: 'Residência Funcional do Com4ºDN', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01, C Alte Elkfury e DN-02' },
+                    { id: '06.03', time: '08:20', title: 'Deslocamento para CIABA', loc: 'CIABA', uniform: 'OP3/6.6', obs: '' },
+                    { id: '06.04', time: '08:35', title: 'Honras de recepção ao CPO-01', loc: 'CIABA', uniform: 'OP3/6.6', obs: 'Participantes: C Alte Elkfury e CIABA-01' },
+                    { id: '06.05', time: '09:00', title: 'Palestra: Processos Seletivos CPO', loc: 'Auditório Sylvio de Magalhães Figueiredo', uniform: 'OP3/6.6', obs: 'Todos Oficiais de Val de Cães' },
+                    { id: '06.06', time: '11:00', title: 'Honras de despedidas ao CPO-01', loc: 'CIABA', uniform: 'OP3/6.6', obs: '' },
+                    { id: '06.07', time: '11:30', title: 'Deslocamento para Com4ºDN', loc: 'Lancha Maguary', uniform: 'OP3/6.6', obs: '' },
+                    { id: '06.08', time: '12:20', title: 'Almoço no Com4ºDN', loc: 'Salão Nobre', uniform: 'OP3/6.6', obs: 'Comitiva do Distrito' },
+                    { id: '06.09', time: '14:00', title: 'Palestra: Processos Seletivos CPO', loc: 'Auditório Portal da Amazônia', uniform: 'OP3/6.6', obs: 'Oficiais Com4ºDN, HNBe e CPAOR' },
+                    { id: '06.11', time: '19:30', title: 'Jantar', loc: 'Estação das Docas', uniform: 'Esporte Amazônico', obs: 'Participantes: DN-01, C Alte Elkfury e DN-02' }
+                ]
+            },
+            {
+                date: '2025-05-07',
+                label: '07 Mai (Qui)',
+                events: [
+                    { id: '07.01', time: '05:50', title: 'Café da Manhã', loc: 'Residência Funcional do Com4ºDN', uniform: 'OP3', obs: '' },
+                    { id: '07.02', time: '06:10', title: 'Deslocamento Aeroporto', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: '' },
+                    { id: '07.03', time: '07:30', title: 'Regresso (Voo Azul 2640)', flight: 'AZU 2640', loc: 'Aeroporto Internacional de Belém', uniform: 'OP3', obs: '' }
+                ]
+            }
+        ];
+
+        const logistics = {
+            vtrs: [
+                { id: 1, auth: "V Alte BATISTA", model: "Toyota Corolla", plate: "RWY-6C87", driver: "SO-MG COELHO", phone: "21997777668" },
+                { id: 2, auth: "C Alte (Ref-FN) ELKFURY", model: "Toyota Corolla", plate: "RWY-6D17", driver: "2° SG-MA GOULART", phone: "21973390076" },
+                { id: 3, auth: "C Alte JOSÉ FÁBIO", model: "Toyota Corolla", plate: "SZF-4C02", driver: "1° SG-CP RAFAEL", phone: "91982393991" }
+            ],
+            uniforms: [
+                { title: "OP3", desc: "Operacional do 4º Distrito (Camisa Polo e Calça Operacional)" },
+                { title: "6.6 (Camuflado)", desc: "Uniforme de Campanha da Marinha (Farda completa)" },
+                { title: "Esporte Amazônico", desc: "Calça social, camisa social de manga curta ou Guayabera, sapatos casuais." }
+            ],
+            stay: {
+                loc: "Residência Funcional do Com4°DN",
+                suite: "Suíte Master",
+                period: "05 a 07 de Maio",
+                attendant: "3°SG-AR Laerte"
+            },
+            authorities: [
+                { rank: "V Alte", name: "BATISTA", role: "Comandante do 4º Distrito Naval" },
+                { rank: "C Alte (Ref-FN)", name: "ELKFURY", role: "Secretário da CPO" },
+                { rank: "C Alte", name: "JOSÉ FÁBIO", role: "Chefe do Estado-Maior do Com4ºDN" }
+            ]
+        };
+
+        // HELPER FUNCTIONS
+        const getMapsLink = (loc) => `https://www.google.com/maps/search/?api=1&query=Belém+${encodeURIComponent(loc)}`;
+        const getFlightLink = (flight) => {
+            const code = flight.replace(/\s/g, '').replace('GOL', 'GLO').replace('AZU', 'AZU');
+            return `https://pt.flightaware.com/live/flight/${code}`;
+        };
+        const getCheckinLink = (flight) => {
+            if(flight.includes('GOL')) return "https://www.voegol.com.br/check-in";
+            if(flight.includes('AZU')) return "https://www.voeazul.com.br/check-in";
+            return "#";
+        };
+
+        // RENDER LOGIC
+        function init() {
+            lucide.createIcons();
+            renderTabs();
+            renderSchedule(schedule[0].date);
+            updateIndicator();
+            setInterval(updateIndicator, 60000);
         }
+
+        function renderTabs() {
+            const container = document.getElementById('day-tabs');
+            container.innerHTML = schedule.map(day => `
+                <button onclick="renderSchedule('${day.date}')" id="tab-${day.date}" 
+                    class="flex-shrink-0 px-6 py-2 rounded-full text-sm font-semibold transition-all
+                    ${appState.currentDay === day.date ? 'navy-bg text-white shadow-md' : 'bg-white text-gray-500 border border-gray-200'}">
+                    ${day.label}
+                </button>
+            `).join('');
+        }
+
+        function renderSchedule(date) {
+            appState.currentDay = date;
+            renderTabs();
+            
+            const dayData = schedule.find(d => d.date === date);
+            const container = document.getElementById('schedule-container');
+            
+            container.innerHTML = `<div id="live-line" class="now-indicator hidden pulse-red"></div>` + 
+                dayData.events.map(ev => `
+                <div class="bg-white rounded-2xl p-4 shadow-sm border-l-4 gold-border relative transition-transform active:scale-[0.98]" id="ev-${ev.id}">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xl font-bold navy-dark-bg text-white px-3 py-1 rounded-lg">${ev.time}</span>
+                        <button onclick="showUniformDetails('${ev.uniform}')" class="text-[10px] font-bold navy-bg text-white px-2 py-1 rounded-full uppercase tracking-tight">
+                            ${ev.uniform}
+                        </button>
+                    </div>
+                    <h3 class="font-bold text-gray-800 leading-tight mb-1">${ev.title}</h3>
+                    <div class="flex items-center text-gray-500 text-sm mb-2">
+                        <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i>
+                        <a href="${getMapsLink(ev.loc)}" target="_blank" class="underline decoration-gold-text decoration-2 underline-offset-2">${ev.loc}</a>
+                    </div>
+                    
+                    ${ev.flight ? `
+                        <div class="mt-3 flex gap-2">
+                            <a href="${getFlightLink(ev.flight)}" target="_blank" class="flex-1 flex items-center justify-center bg-blue-50 text-blue-700 py-2 rounded-xl text-xs font-bold border border-blue-100">
+                                <i data-lucide="plane" class="w-3 h-3 mr-1"></i> FlightAware
+                            </a>
+                            ${appState.isTravel ? `
+                                <a href="${getCheckinLink(ev.flight)}" target="_blank" class="flex-1 flex items-center justify-center bg-green-50 text-green-700 py-2 rounded-xl text-xs font-bold border border-green-100">
+                                    <i data-lucide="check-square" class="w-3 h-3 mr-1"></i> Fazer Check-in
+                                </a>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                    
+                    ${ev.obs ? `<p class="mt-2 text-[10px] text-gray-400 italic font-medium">${ev.obs}</p>` : ''}
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+            updateIndicator();
+        }
+
+        function updateIndicator() {
+            const now = new Date();
+            // Para testes, vamos ajustar a data "real" se não estivermos no dia do evento
+            // Mas seguiremos a lógica real aqui:
+            const h = now.getHours();
+            const m = now.getMinutes();
+            const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+            
+            // Format today as YYYY-MM-DD
+            const todayStr = now.toISOString().split('T')[0];
+            const line = document.getElementById('live-line');
+            
+            if (appState.currentDay !== todayStr) {
+                line.classList.add('hidden');
+                return;
+            }
+
+            const dayData = schedule.find(d => d.date === appState.currentDay);
+            const events = dayData.events;
+            
+            // Lógica para posicionar a linha
+            // Vamos encontrar entre quais eventos estamos
+            let targetTop = 0;
+            let found = false;
+
+            for (let i = 0; i < events.length; i++) {
+                const el = document.getElementById(`ev-${events[i].id}`);
+                if (timeStr >= events[i].time) {
+                    targetTop = el.offsetTop + (el.offsetHeight / 2); // Centraliza no card
+                    found = true;
+                }
+            }
+
+            if (found) {
+                line.classList.remove('hidden');
+                line.style.top = `${targetTop}px`;
+            } else {
+                line.classList.add('hidden');
+            }
+        }
+
+        // MODAL SYSTEM
+        function openModal(type) {
+            const content = document.getElementById('modal-content');
+            const sheet = document.getElementById('bottom-sheet');
+            const overlay = document.getElementById('modal-overlay');
+
+            if (type === 'authorities') {
+                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Autoridades</h2>
+                    <div class="space-y-4">
+                        ${logistics.authorities.map(a => `
+                            <div class="flex items-center p-3 bg-gray-50 rounded-xl border border-gray-100">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold mr-3">${a.rank.charAt(0)}</div>
+                                <div>
+                                    <p class="font-bold text-gray-800">${a.rank} ${a.name}</p>
+                                    <p class="text-xs text-gray-500">${a.role}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>`;
+            } else if (type === 'logistics') {
+                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Controle de Viaturas</h2>
+                    <div class="space-y-4">
+                        ${logistics.vtrs.map(v => `
+                            <div class="p-4 bg-gray-50 rounded-2xl border border-gray-200">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div>
+                                        <p class="text-[10px] uppercase font-bold text-gray-400">Autoridade</p>
+                                        <p class="font-bold text-navy">${v.auth}</p>
+                                    </div>
+                                    <span class="bg-gold-text text-black text-[10px] px-2 py-1 rounded font-bold">${v.plate}</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 text-sm mb-3">
+                                    <div>
+                                        <p class="text-[10px] text-gray-400">Modelo</p>
+                                        <p class="font-medium">${v.model}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400">Motorista</p>
+                                        <p class="font-medium">${v.driver}</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a href="tel:${v.phone}" class="flex-1 bg-navy-dark-bg text-white py-2 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="phone" class="w-4 h-4"></i> Ligar
+                                    </a>
+                                    <a href="https://wa.me/55${v.phone}" target="_blank" class="flex-1 bg-green-600 text-white py-2 rounded-xl flex items-center justify-center gap-2">
+                                        <i data-lucide="message-square" class="w-4 h-4"></i> WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>`;
+            } else if (type === 'uniforms') {
+                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Uniformes</h2>
+                    <div class="space-y-3">
+                        ${logistics.uniforms.map(u => `
+                            <div class="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                                <p class="font-bold navy-dark-bg text-white inline-block px-2 py-0.5 rounded text-xs mb-1">${u.title}</p>
+                                <p class="text-sm text-gray-600">${u.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>`;
+            } else if (type === 'stay') {
+                content.innerHTML = `<h2 class="text-xl font-bold mb-4 navy-bg text-white p-3 rounded-xl">Hospedagem</h2>
+                    <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                        <div class="text-center mb-4">
+                            <i data-lucide="building" class="w-12 h-12 mx-auto text-gold-text mb-2"></i>
+                            <p class="font-bold text-lg">${logistics.stay.loc}</p>
+                            <p class="text-gray-500">${logistics.stay.suite}</p>
+                        </div>
+                        <hr class="my-4">
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Período</span>
+                                <span class="font-bold">${logistics.stay.period}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-400 text-sm">Despenseiro</span>
+                                <span class="font-bold">${logistics.stay.attendant}</span>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            overlay.classList.remove('hidden');
+            sheet.classList.remove('modal-enter');
+            sheet.classList.add('modal-active');
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            const sheet = document.getElementById('bottom-sheet');
+            const overlay = document.getElementById('modal-overlay');
+            
+            sheet.classList.remove('modal-active');
+            sheet.classList.add('modal-enter');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        function showUniformDetails(uniform) {
+            openModal('uniforms');
+        }
+
+        function toggleType() {
+            appState.isTravel = !appState.isTravel;
+            renderSchedule(appState.currentDay);
+            const msg = appState.isTravel ? "Modo VIAGEM ativado (Check-in liberado)" : "Modo VISITA INSTITUCIONAL ativado";
+            alert(msg);
+        }
+
+        // Initialize
+        window.onload = init;
     </script>
 </body>
 </html>
-
